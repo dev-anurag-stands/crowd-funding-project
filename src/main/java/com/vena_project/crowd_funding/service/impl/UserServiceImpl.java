@@ -1,4 +1,6 @@
 package com.vena_project.crowd_funding.service.impl;
 
-public class UserServiceImpl {
+import com.vena_project.crowd_funding.service.UserService;
+
+public class UserServiceImpl implements UserService {
 }
