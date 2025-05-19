@@ -4,9 +4,7 @@ import com.vena_project.crowd_funding.model.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +27,11 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private UserRole role = UserRole.USER;
 
     @OneToMany(mappedBy = "createdBy")
     private List<Project> projects = new ArrayList<>();
+
+    @OneToMany(mappedBy = "contributor")
+    private List<Contribution> contributions = new ArrayList<>();
 }
