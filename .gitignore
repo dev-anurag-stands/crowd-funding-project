@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+# Ignore application properties
+/Users/hpawar/Project/crowd-funding-project/src/main/resources/application.properties
+
