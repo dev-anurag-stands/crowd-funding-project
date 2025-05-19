@@ -33,4 +33,7 @@ public class User {
 
     @OneToMany(mappedBy = "createdBy")
     private List<Project> projects = new ArrayList<>();
+
+    @OneToMany(mappedBy = "contributor")
+    private List<Contribution> contributions = new ArrayList<>();
 }
