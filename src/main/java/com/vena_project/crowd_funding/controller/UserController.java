@@ -1,7 +1,9 @@
 package com.vena_project.crowd_funding.controller;
 
+import com.vena_project.crowd_funding.dto.UpdateUserInfo;
 import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,4 +27,11 @@ public class UserController {
         return new ResponseEntity<>(userService.usersList(), HttpStatus.OK);
     }
 
+
+    @PatchMapping("/update-info")
+    public ResponseEntity<String> updateUserInfo(@Valid @RequestBody UpdateUserInfo updatedUserInfo){
+        System.out.println("hello");
+        userService.updateUserInformation(updatedUserInfo);
+        return new ResponseEntity<>("user updated", HttpStatus.OK);
+    }
 }
