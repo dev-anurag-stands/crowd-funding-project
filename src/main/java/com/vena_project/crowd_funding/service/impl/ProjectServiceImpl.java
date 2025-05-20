@@ -8,6 +8,7 @@ import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import com.vena_project.crowd_funding.repository.ProjectRepository;
 import com.vena_project.crowd_funding.repository.UserRepository;
 import com.vena_project.crowd_funding.service.ProjectService;
+import com.vena_project.crowd_funding.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,16 +20,15 @@ import java.util.stream.Collectors;
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
+    private UserService userService;
 
-    ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository) {
+    ProjectServiceImpl(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
-        this.userRepository = userRepository;
     }
 
     @Override
     public Project createProject(Long userId, ProjectRequestDTO project) {
-        User user = userRepository.findById(userId)
+        User user = userService.userInfo(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
 
         Project newProject = new Project();
