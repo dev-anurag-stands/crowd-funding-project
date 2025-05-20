@@ -5,9 +5,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import com.vena_project.crowd_funding.model.enums.UserRole;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class UserDTO {
     @NotBlank(message = "provide a valid name")
     private String name;
