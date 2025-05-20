@@ -6,6 +6,7 @@ import com.vena_project.crowd_funding.model.Contribution;
 import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import com.vena_project.crowd_funding.model.User;
+import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.repository.ContributionRepository;
 import com.vena_project.crowd_funding.repository.ProjectRepository;
 import com.vena_project.crowd_funding.repository.UserRepository;
@@ -40,6 +41,7 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     private ContributionResponseDTO addContribution(ContributionRequestDTO requestDTO, boolean isProfitableExpected) {
+
         Project project = projectRepository.findById(requestDTO.getProjectId())
                 .orElseThrow(() -> new RuntimeException("Project not found with ID: " + requestDTO.getProjectId()));
 
@@ -60,6 +62,10 @@ public class ContributionServiceImpl implements ContributionService {
 
         User contributor = userRepository.findById(requestDTO.getContributorId())
                 .orElseThrow(() -> new RuntimeException("Contributor not found with ID: " + requestDTO.getContributorId()));
+
+        if (contributor.getRole().equals(UserRole.ADMIN)) {
+            throw new RuntimeException("Admins are not allowed to make contributions");
+        }
 
         Contribution contribution = new Contribution();
         contribution.setProject(project);
@@ -82,4 +88,5 @@ public class ContributionServiceImpl implements ContributionService {
         return responseDTO;
     }
 }
+
 
