@@ -1,5 +1,7 @@
 package com.vena_project.crowd_funding.controller;
 
+import com.vena_project.crowd_funding.dto.UserInfoDTO;
+import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.service.AdminService;
@@ -12,7 +14,7 @@ import java.util.List;
 import static com.vena_project.crowd_funding.model.enums.UserRole.ADMIN;
 
 @RestController
-@RequestMapping
+@RequestMapping("/admin")
 public class AdminController {
     private final AdminService adminService;
 
@@ -20,18 +22,15 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @PostMapping("/register-user")
-    public ResponseEntity<User> registerAdminUser(@RequestBody User user){
-        try {
-            User registeredUser = adminService.registerAdminUser(user);
-            return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+    @PatchMapping("/upgrade/{userId}")
+    public ResponseEntity<String> upgradeUserToAdmin(@PathVariable Long userId) {
+        return new ResponseEntity<>(   adminService.upgradeUserToAdmin(userId), HttpStatus.OK);
     }
+
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers(){
-        List<User> users= adminService.getAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    public ResponseEntity<List<UserInfoDTO>> getAllUsers(){
+        return new ResponseEntity<>(adminService.getAllUsers(), HttpStatus.OK);
     }
+//    @GetMapping("/user")
+//    public ResponseEntity<List<Project>>
 }
