@@ -22,15 +22,16 @@ public class AdminController {
         this.adminService = adminService;
     }
 
+    @GetMapping("/users")
+    public ResponseEntity<List<UserInfoDTO>> getAllUsers(){
+        System.out.println("Admin Fetched All Users");
+        return new ResponseEntity<>(adminService.getAllUsers(), HttpStatus.OK);
+    }
+
     @PatchMapping("/upgrade/{userId}")
     public ResponseEntity<String> upgradeUserToAdmin(@PathVariable Long userId) {
+        System.out.println("Admin updated a user with id " + userId + " as Admin");
         return new ResponseEntity<>(   adminService.upgradeUserToAdmin(userId), HttpStatus.OK);
     }
 
-    @GetMapping("/users")
-    public ResponseEntity<List<UserInfoDTO>> getAllUsers(){
-        return new ResponseEntity<>(adminService.getAllUsers(), HttpStatus.OK);
-    }
-//    @GetMapping("/user")
-//    public ResponseEntity<List<Project>>
 }
