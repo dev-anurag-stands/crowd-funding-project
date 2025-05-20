@@ -1,5 +1,8 @@
 package com.vena_project.crowd_funding.service.impl;
 
+import com.vena_project.crowd_funding.dto.ApprovedProjectDTO;
+import com.vena_project.crowd_funding.dto.ProjectRequestDTO;
+import com.vena_project.crowd_funding.dto.ProjectResponseDTO;
 import com.vena_project.crowd_funding.exception.ResourceNotFoundException;
 import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.User;
@@ -10,7 +13,9 @@ import com.vena_project.crowd_funding.service.ProjectService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -24,27 +29,51 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project createProject(Long userId, Project project) {
+    public Project createProject(Long userId, ProjectRequestDTO project) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
-        project.setCreatedBy(user.getId());
-        project.setProfitable(project.isProfitable());
-        project.setCreatedOn(LocalDate.now());
-        project.setAmountTillNow(0.0);
-        return projectRepository.save(project);
+
+        Project newProject = new Project();
+
+        newProject.setTitle(project.getTitle());
+        newProject.setDescription(project.getDescription());
+        newProject.setTotalAmountAsked(project.getTotalAmountAsked());
+        newProject.setCreatedBy(user.getId());
+        newProject.setProfitable(project.isProfitable());
+        newProject.setCreatedOn(LocalDate.now());
+        newProject.setAmountTillNow(0.0);
+
+        return projectRepository.save(newProject);
     }
 
     @Override
-    public List<Project> getProjectByUserId(Long userId) {
-        System.out.println("createdById = " + userId);
-        List<Project> list = projectRepository.findProjectsByUserId(userId);
-        System.out.println("List is empty" + list);
-        return list;
+    public List<ProjectResponseDTO> getProjectByUserId(Long userId) {
+        List<Project> projectList = projectRepository.findProjectsByUserId(userId);
+        return projectList.stream().map(project -> {
+            ProjectResponseDTO dto = new ProjectResponseDTO();
+            dto.setTitle(project.getTitle());
+            dto.setDescription(project.getDescription());
+            dto.setTotalAmountAsked(project.getTotalAmountAsked());
+            dto.setAmountTillNow(project.getAmountTillNow());
+            dto.setProjectStatus(project.getProjectStatus());
+            dto.setProfitable(project.isProfitable());
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     @Override
-    public List<Project> getApprovedProjects() {
-        return projectRepository.findByProjectStatus(ProjectStatus.APPROVED);
+    public List<ApprovedProjectDTO> getApprovedProjects() {
+        List<Project> projectList = projectRepository.findByProjectStatus(ProjectStatus.APPROVED);
+        return projectList.stream().map(project -> {
+                    ApprovedProjectDTO dto = new ApprovedProjectDTO();
+                    dto.setTitle(project.getTitle());
+                    dto.setDescription(project.getDescription());
+                    dto.setTotalAmountAsked(project.getTotalAmountAsked());
+                    dto.setAmountTillNow(project.getAmountTillNow());
+                    dto.setProfitable(project.isProfitable());
+                    return dto;
+                }
+        ).toList();
     }
 
     @Override
