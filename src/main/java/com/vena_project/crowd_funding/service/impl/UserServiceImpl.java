@@ -126,4 +126,16 @@ public class UserServiceImpl implements UserService {
     public void registerAdmin(User admin) {
         userRepository.save(admin);
     }
+
+    @Override
+    public User saveUser(User user){
+        if(user == null ||
+        user.getName() == null || user.getName().isBlank() ||
+        user.getEmail() == null || user.getEmail().isBlank() ||
+        user.getPassword() == null || user.getPassword().isBlank()){
+            throw new IllegalArgumentException("Invalid user: name, email, password, Role must not be null or blank.");
+        }
+
+        return userRepository.save(user);
+    }
 }
