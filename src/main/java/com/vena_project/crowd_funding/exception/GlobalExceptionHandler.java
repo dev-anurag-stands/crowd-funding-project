@@ -12,7 +12,6 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
     // Handles general bad requests (e.g., malformed JSON, type mismatch for path
     // variables)
     @ExceptionHandler(IllegalArgumentException.class) // For simple bad request scenarios
@@ -25,5 +24,18 @@ public class GlobalExceptionHandler {
         body.put("message", ex.getMessage()); // Or a more generic message
         body.put("path", request.getDescription(false).replace("uri=", ""));
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    // Handles resource not found exceptions
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Object> handleResourceNotFoundException(
+            ResourceNotFoundException ex, WebRequest request) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.NOT_FOUND.value());
+        body.put("error", "Not Found");
+        body.put("message", ex.getMessage());
+        body.put("path", request.getDescription(false).replace("uri=", ""));
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 }
