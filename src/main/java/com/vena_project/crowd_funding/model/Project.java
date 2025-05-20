@@ -6,6 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class Project {
@@ -13,29 +17,4 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private User createdBy;
-
-    @NotBlank(message = "Title cannot be empty")
-    private String title;
-
-    @NotBlank(message = "Description cannot be empty")
-    private String description;
-
-    @NotNull(message = "Total amount asked cannot be null")
-    private double totalAmountAsked;
-
-    @NotNull(message = "Amount collected so far cannot be null")
-    private double amountTillNow;
-
-    @Enumerated(EnumType.STRING)
-    private ProjectStatus projectStatus;
-
-    @Column(nullable = false)
-    private boolean isProfitable;
-
-    @NotNull(message = "Creation date cannot be null")
-    private LocalDate createdAt;
 }
