@@ -8,7 +8,6 @@ import lombok.Data;
 
 @Data
 public class UserInfoDTO {
-
     @Email(message = "provide a valid email address")
     private String email;
 
