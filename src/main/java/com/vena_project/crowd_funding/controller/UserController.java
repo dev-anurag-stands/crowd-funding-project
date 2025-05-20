@@ -8,17 +8,14 @@ import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.service.UserService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/user")
-@Validated
 public class UserController {
 
     private final UserService userService;
@@ -44,8 +41,7 @@ public class UserController {
 
     @GetMapping("/info/{id}")
     public ResponseEntity<User> getUserInfo(
-            @NotNull(message = "user id cannot be null") @PathVariable Long id){
-        System.out.println("hello user with id : "+id);
+            @PathVariable Long id){
         return new ResponseEntity<>(userService.userInfo(id), HttpStatus.OK);
     }
 
@@ -57,9 +53,8 @@ public class UserController {
 
     @PatchMapping("/update-info/{id}")
     public ResponseEntity<String> updateUserInfo(
-            @NotNull(message = "User ID cannot be null") @PathVariable Long id,
+            @PathVariable Long id,
             @Valid @RequestBody UpdateUserInfoDTO updatedUserInfo){
-        System.out.println("hello");
         userService.updateUserInformation(id, updatedUserInfo);
         return new ResponseEntity<>("user updated", HttpStatus.OK);
     }
