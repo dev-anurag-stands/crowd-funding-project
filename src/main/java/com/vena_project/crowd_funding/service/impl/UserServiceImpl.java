@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
                     .stream()
                     .map(user -> {
                         UserInfoDTO dto = new UserInfoDTO();
+                        dto.setId(user.getId());
                         dto.setName(user.getName());
                         dto.setEmail(user.getEmail());
                         dto.setRole(user.getRole());
