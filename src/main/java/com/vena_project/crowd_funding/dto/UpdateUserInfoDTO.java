@@ -1,5 +1,6 @@
 package com.vena_project.crowd_funding.dto;
 
+import com.vena_project.crowd_funding.model.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -13,4 +14,9 @@ public class UpdateUserInfoDTO {
 
     @NotBlank(message = "name can not be null or empty")
     private String name;
+
+    public UpdateUserInfoDTO(User user) {
+        this.email = user.getEmail();
+        this.name = user.getName();
+    }
 }

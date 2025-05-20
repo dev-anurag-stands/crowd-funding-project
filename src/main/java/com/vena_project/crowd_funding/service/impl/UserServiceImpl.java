@@ -3,6 +3,7 @@ package com.vena_project.crowd_funding.service.impl;
 import com.vena_project.crowd_funding.dto.LoginRequestDTO;
 import com.vena_project.crowd_funding.dto.UpdateUserInfoDTO;
 import com.vena_project.crowd_funding.dto.UserDTO;
+import com.vena_project.crowd_funding.dto.UserInfoDTO;
 import com.vena_project.crowd_funding.exception.ResourceNotFoundException;
 import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.model.enums.UserRole;
@@ -11,6 +12,7 @@ import com.vena_project.crowd_funding.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -22,12 +24,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> usersList() {
-        return userRepository.findAll();
+    public List<UserInfoDTO> usersList() {
+            return userRepository.findAll()
+                    .stream()
+                    .map(user -> {
+                        UserInfoDTO dto = new UserInfoDTO();
+                        dto.setName(user.getName());
+                        dto.setEmail(user.getEmail());
+                        dto.setRole(user.getRole());
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
     }
 
     @Override
-    public void updateUserInformation(UpdateUserInfoDTO updatedUserInfo) {
+    public void updateUserInformation(Long id, UpdateUserInfoDTO updatedUserInfo) {
+        if(userRepository.findById(id).isEmpty()){
+            throw new ResourceNotFoundException("invalid user id");
+        }
+
         if(updatedUserInfo.getName() == null
         || updatedUserInfo.getEmail() == null
         || updatedUserInfo.getEmail().isBlank()
@@ -37,6 +52,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.findByEmail(updatedUserInfo.getEmail()).ifPresent(user -> {
             {
+                user.setEmail(updatedUserInfo.getEmail());
                 user.setName(updatedUserInfo.getName());
                 userRepository.save(user);
             }
@@ -99,5 +115,15 @@ public class UserServiceImpl implements UserService {
         }
 
         return userRepository.findById(id).get();
+    }
+
+    @Override
+    public boolean adminExists() {
+        return userRepository.existsByRole(UserRole.ADMIN);
+    }
+
+    @Override
+    public void registerAdmin(User admin) {
+        userRepository.save(admin);
     }
 }

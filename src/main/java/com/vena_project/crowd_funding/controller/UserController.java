@@ -3,6 +3,7 @@ package com.vena_project.crowd_funding.controller;
 import com.vena_project.crowd_funding.dto.LoginRequestDTO;
 import com.vena_project.crowd_funding.dto.UpdateUserInfoDTO;
 import com.vena_project.crowd_funding.dto.UserDTO;
+import com.vena_project.crowd_funding.dto.UserInfoDTO;
 import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.service.UserService;
@@ -49,7 +50,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> listUsers(){
+    public ResponseEntity<List<UserInfoDTO>> listUsers(){
         return new ResponseEntity<>(userService.usersList(), HttpStatus.OK);
     }
 
@@ -59,7 +60,7 @@ public class UserController {
             @NotNull(message = "User ID cannot be null") @PathVariable Long id,
             @Valid @RequestBody UpdateUserInfoDTO updatedUserInfo){
         System.out.println("hello");
-        userService.updateUserInformation(updatedUserInfo);
+        userService.updateUserInformation(id, updatedUserInfo);
         return new ResponseEntity<>("user updated", HttpStatus.OK);
     }
 }
