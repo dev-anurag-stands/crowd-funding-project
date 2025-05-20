@@ -1,5 +1,6 @@
 package com.vena_project.crowd_funding.controller;
 
+import com.vena_project.crowd_funding.dto.LoginRequest;
 import com.vena_project.crowd_funding.dto.UpdateUserInfo;
 import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.service.UserService;
@@ -20,6 +21,18 @@ public class UserController {
 
     public UserController(UserService userService){
         this.userService = userService;
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@Valid @RequestBody User user){
+        userService.register(user);
+        return new ResponseEntity<>("user registered", HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest){
+        userService.login(loginRequest);
+        return new ResponseEntity<>("user logged in", HttpStatus.OK);
     }
 
     @GetMapping("/users")
