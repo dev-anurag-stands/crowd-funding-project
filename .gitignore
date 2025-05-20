@@ -31,3 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
+## Project file
+/Users/atirole/Downloads/crowd-funding-project/src/main/resources/application.properties
