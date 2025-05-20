@@ -4,10 +4,7 @@ import com.vena_project.crowd_funding.dto.LoginRequest;
 import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.repository.UserRepository;
 import com.vena_project.crowd_funding.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Service
 public class AuthServiceImpl implements AuthService {

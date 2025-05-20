@@ -1,5 +1,6 @@
 package com.vena_project.crowd_funding.model;
 
+
 import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -7,16 +8,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Data
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
-@Entity
 public class Project {
 
     @Id
