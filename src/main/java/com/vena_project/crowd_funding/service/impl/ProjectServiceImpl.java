@@ -1,8 +1,6 @@
 package com.vena_project.crowd_funding.service.impl;
 
-import com.vena_project.crowd_funding.dto.ApprovedProjectDTO;
-import com.vena_project.crowd_funding.dto.ProjectRequestDTO;
-import com.vena_project.crowd_funding.dto.ProjectResponseDTO;
+import com.vena_project.crowd_funding.dto.*;
 import com.vena_project.crowd_funding.exception.ResourceNotFoundException;
 import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.User;
@@ -71,20 +69,41 @@ public class ProjectServiceImpl implements ProjectService {
                     dto.setTotalAmountAsked(project.getTotalAmountAsked());
                     dto.setAmountTillNow(project.getAmountTillNow());
                     dto.setProfitable(project.isProfitable());
+                    dto.setCreatedOn(project.getCreatedOn());
                     return dto;
                 }
         ).toList();
     }
 
     @Override
-    public Project getProjectById(Long id) {
-        return projectRepository.findById(id)
+    public ProjectDTO getProjectById(Long id) {
+        Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id " + id));
+        ProjectDTO dto = new ProjectDTO();
+
+        dto.setTitle(project.getTitle());
+        dto.setDescription(project.getDescription());
+        dto.setTotalAmountAsked(project.getTotalAmountAsked());
+        dto.setAmountTillNow(project.getAmountTillNow());
+        dto.setCreatedOn(project.getCreatedOn());
+        dto.setProfitable(project.isProfitable());
+        dto.setProjectStatus(project.getProjectStatus());
+        return dto;
     }
 
     @Override
-    public List<Project> getProjectsByProfitability(boolean profitable) {
-        return projectRepository.findByProfitable(profitable);
+    public List<ProjectTypeDTO> getProjectsByProfitability(boolean profitable) {
+        List<Project> projectList = projectRepository.findByProfitable(profitable);
+
+        return projectList.stream().map(project -> {
+            ProjectTypeDTO dto = new ProjectTypeDTO();
+            dto.setTitle(project.getTitle());
+            dto.setDescription(project.getDescription());
+            dto.setTotalAmountAsked(project.getTotalAmountAsked());
+            dto.setAmountTillNow(project.getAmountTillNow());
+            dto.setCreatedOn(project.getCreatedOn());
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     @Override

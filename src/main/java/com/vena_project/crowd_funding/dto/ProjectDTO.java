@@ -8,8 +8,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
-public class ProjectResponseDTO {
+public class ProjectDTO {
     @NotBlank(message = "Title cannot be empty")
     private String title;
 
@@ -23,8 +25,11 @@ public class ProjectResponseDTO {
     private double amountTillNow;
 
     @Enumerated(EnumType.STRING)
-    private ProjectStatus projectStatus;
+    private ProjectStatus projectStatus = ProjectStatus.PENDING;
 
     @Column(nullable = false)
     private boolean profitable;
+
+    @NotNull(message = "Creation date cannot be null")
+    private LocalDate createdOn;
 }
