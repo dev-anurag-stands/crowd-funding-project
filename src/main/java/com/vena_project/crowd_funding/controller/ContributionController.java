@@ -34,7 +34,18 @@ public class ContributionController {
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
+    @PostMapping("/donate/{userId}/{projectId}")
+    public ResponseEntity<ContributionResponseDTO> donate(
+            @PathVariable Long userId,
+            @PathVariable Long projectId,
+            @RequestBody ContributionRequestDTO requestDTO) {
 
+        requestDTO.setContributorId(userId);
+        requestDTO.setProjectId(projectId);
+
+        ContributionResponseDTO responseDTO = contributionService.addDonationContribution(requestDTO);
+        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+    }
 
 }
 
