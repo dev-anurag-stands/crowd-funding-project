@@ -10,7 +10,6 @@ import com.vena_project.crowd_funding.service.ProjectService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,9 +27,9 @@ public class ProjectServiceImpl implements ProjectService {
     public Project createProject(Long userId, Project project) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
-
         project.setCreatedBy(user.getId());
-        project.setCreatedAt(LocalDate.now());
+        project.setProfitable(project.isProfitable());
+        project.setCreatedOn(LocalDate.now());
         project.setAmountTillNow(0.0);
         return projectRepository.save(project);
     }
@@ -52,5 +51,21 @@ public class ProjectServiceImpl implements ProjectService {
     public Project getProjectById(Long id) {
         return projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id " + id));
+    }
+
+    @Override
+    public List<Project> getProjectsByProfitability(boolean profitable) {
+        return projectRepository.findByProfitable(profitable);
+    }
+
+    @Override
+    public void deleteProject(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id " + projectId));
+
+        if (project.getProjectStatus() == ProjectStatus.APPROVED ) {
+            throw new IllegalStateException("Only pending and rejected projects can be deleted");
+        }
+        projectRepository.delete(project);
     }
 }

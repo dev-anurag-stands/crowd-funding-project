@@ -35,8 +35,8 @@ public class Project {
     private ProjectStatus projectStatus = ProjectStatus.PENDING;
 
     @Column(nullable = false)
-    private boolean isProfitable;
+    private boolean profitable;
 
     @NotNull(message = "Creation date cannot be null")
-    private LocalDate createdAt;
+    private LocalDate createdOn;
 }

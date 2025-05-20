@@ -8,4 +8,6 @@ public interface ProjectService {
     List<Project> getProjectByUserId(Long createdBy);
     List<Project> getApprovedProjects();
     Project getProjectById(Long id);
+    List<Project> getProjectsByProfitability(boolean profitability);
+    void deleteProject(Long projectId);
 }
