@@ -31,19 +31,19 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     @Override
-    public ContributionResponseDTO addInvestmentContribution(ContributionRequestDTO requestDTO) {
-        return addContribution(requestDTO, true); // true = expecting a profitable project
+    public ContributionResponseDTO addInvestmentContribution(Long userId, Long projectId, ContributionRequestDTO requestDTO) {
+        return addContribution(userId, projectId, requestDTO, true);
     }
 
     @Override
-    public ContributionResponseDTO addDonationContribution(ContributionRequestDTO requestDTO) {
-        return addContribution(requestDTO, false); // false = expecting a non-profitable project
+    public ContributionResponseDTO addDonationContribution(Long userId, Long projectId, ContributionRequestDTO requestDTO) {
+        return addContribution(userId, projectId, requestDTO, false);
     }
 
-    private ContributionResponseDTO addContribution(ContributionRequestDTO requestDTO, boolean isProfitableExpected) {
+    private ContributionResponseDTO addContribution(Long userId, Long projectId, ContributionRequestDTO requestDTO, boolean isProfitableExpected) {
 
-        Project project = projectRepository.findById(requestDTO.getProjectId())
-                .orElseThrow(() -> new RuntimeException("Project not found with ID: " + requestDTO.getProjectId()));
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found with ID: " + projectId));
 
         if (!project.getProjectStatus().equals(ProjectStatus.APPROVED)) {
             throw new RuntimeException("Only approved projects can receive contributions");
@@ -60,8 +60,8 @@ public class ContributionServiceImpl implements ContributionService {
             throw new RuntimeException("Project has already reached its target amount and is considered disbursed.");
         }
 
-        User contributor = userRepository.findById(requestDTO.getContributorId())
-                .orElseThrow(() -> new RuntimeException("Contributor not found with ID: " + requestDTO.getContributorId()));
+        User contributor = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Contributor not found with ID: " + userId));
 
         if (contributor.getRole().equals(UserRole.ADMIN)) {
             throw new RuntimeException("Admins are not allowed to make contributions");
@@ -80,13 +80,17 @@ public class ContributionServiceImpl implements ContributionService {
 
         ContributionResponseDTO responseDTO = new ContributionResponseDTO();
         responseDTO.setContributionId(contribution.getId());
-        responseDTO.setContributorName(contributor.getName());
-        responseDTO.setProjectTitle(project.getTitle());
+        responseDTO.setContributorName(contribution.getContributor().getName());
+        responseDTO.setProjectTitle(contribution.getProject().getTitle());
+        responseDTO.setProjectDescription(contribution.getProject().getDescription());
         responseDTO.setAmountGiven(contribution.getAmountGiven());
         responseDTO.setContributionDate(contribution.getDate());
+
 
         return responseDTO;
     }
 }
+
+
 
 

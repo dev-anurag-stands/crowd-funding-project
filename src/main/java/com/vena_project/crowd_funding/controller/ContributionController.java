@@ -27,10 +27,8 @@ public class ContributionController {
             @PathVariable Long projectId,
             @RequestBody ContributionRequestDTO requestDTO) {
 
-        requestDTO.setContributorId(userId);
-        requestDTO.setProjectId(projectId);
-
-        ContributionResponseDTO responseDTO = contributionService.addInvestmentContribution(requestDTO);
+        ContributionResponseDTO responseDTO =
+                contributionService.addInvestmentContribution(userId, projectId, requestDTO);
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
@@ -40,12 +38,10 @@ public class ContributionController {
             @PathVariable Long projectId,
             @RequestBody ContributionRequestDTO requestDTO) {
 
-        requestDTO.setContributorId(userId);
-        requestDTO.setProjectId(projectId);
-
-        ContributionResponseDTO responseDTO = contributionService.addDonationContribution(requestDTO);
+        ContributionResponseDTO responseDTO =
+                contributionService.addDonationContribution(userId, projectId, requestDTO);
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
-
 }
+
 

@@ -5,12 +5,10 @@ import com.vena_project.crowd_funding.dto.ContributionResponseDTO;
 
 public interface ContributionService {
 
-    ContributionResponseDTO addInvestmentContribution(ContributionRequestDTO requestDTO);
+    ContributionResponseDTO addInvestmentContribution(Long userId, Long projectId, ContributionRequestDTO requestDTO);
 
-    ContributionResponseDTO addDonationContribution(ContributionRequestDTO requestDTO);
-
-    // For future use:
-    // List<ContributionResponseDTO> getContributionsByProjectOwner(Long ownerId);
+    ContributionResponseDTO addDonationContribution(Long userId, Long projectId, ContributionRequestDTO requestDTO);
 }
+
 
 
