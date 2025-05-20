@@ -8,6 +8,9 @@ import lombok.Data;
 
 @Data
 public class UserInfoDTO {
+    @NotNull(message = "id cannot be null")
+    private Long id;
+
     @Email(message = "provide a valid email address")
     private String email;
 
