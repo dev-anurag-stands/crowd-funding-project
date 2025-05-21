@@ -1,24 +1,17 @@
-package com.vena_project.crowd_funding.model;
+package com.vena_project.crowd_funding.dto;
 
 import com.vena_project.crowd_funding.model.enums.ProjectStatus;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
 
-@Entity
 @Data
-public class Project {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "created_by_id", nullable = false)
-    private Long createdBy;
-
+public class ApprovedProjectDTO {
     @NotBlank(message = "Title cannot be empty")
     private String title;
 
@@ -30,9 +23,6 @@ public class Project {
 
     @NotNull(message = "Amount collected so far cannot be null")
     private double amountTillNow;
-
-    @Enumerated(EnumType.STRING)
-    private ProjectStatus projectStatus = ProjectStatus.PENDING;
 
     @Column(nullable = false)
     private boolean profitable;

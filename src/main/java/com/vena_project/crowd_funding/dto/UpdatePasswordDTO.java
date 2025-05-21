@@ -5,10 +5,15 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class LoginRequest {
-    @Email(message = "provide a valid email id")
+public class UpdatePasswordDTO {
+
+    @Email(message = "provide a valid email")
+    @NotBlank
     private String email;
 
-    @NotBlank(message = "provide a valid password")
-    private String password;
+    @NotBlank
+    private String oldPassword;
+
+    @NotBlank
+    private String newPassword;
 }

@@ -1,4 +1,14 @@
 package com.vena_project.crowd_funding.service;
 
+import com.vena_project.crowd_funding.dto.*;
+import com.vena_project.crowd_funding.model.Project;
+import java.util.List;
+
 public interface ProjectService {
+    Project createProject(Long userId, ProjectRequestDTO project);
+    List<ProjectResponseDTO> getProjectByUserId(Long createdBy);
+    List<ApprovedProjectDTO> getApprovedProjects();
+    ProjectDTO getProjectById(Long id);
+    List<ProjectTypeDTO> getProjectsByProfitability(boolean profitability);
+    void deleteProject(Long projectId);
 }
