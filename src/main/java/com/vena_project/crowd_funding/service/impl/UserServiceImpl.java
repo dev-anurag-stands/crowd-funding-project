@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,7 +62,7 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Admin cannot be registered, submit a request first.");
         }
 
-        if (userRepository.findByEmail(userDTO.getEmail()) != null) {
+        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email already in use");
         }
 
@@ -85,12 +86,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO userInfo(Long id) {
-        User user = userRepository.findById(id).orElse(null);
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow( () -> new ResourceNotFoundException("user with the id : "+id+" could not be found"));
+    }
 
-        if(user != null){
-            throw new ResourceNotFoundException("Invalid user id.");
-        }
+    @Override
+    public UserResponseDTO userInfo(Long id) {
+        User user = getUserById(id);
 
         if(user.getRole() == UserRole.ADMIN){
             throw new IllegalArgumentException("Admin cannot be accessed");
