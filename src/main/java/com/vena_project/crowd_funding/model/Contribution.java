@@ -4,14 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
-
+@AllArgsConstructor
 @Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Contribution
 {
 
@@ -22,14 +18,14 @@ public class Contribution
     // Foreign key to User table
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contributor_id", nullable = false)
-    @NotNull(message = "Contributor must not be null")
-    private User contributor;
+    @NotNull(message = "ContributorId must not be null")
+    private Long contributorId;
 
     // Foreign key to Project table
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     @NotNull(message = "Project must not be null")
-    private Project project;
+    private Long projectId;
 
     @NotNull(message = "Amount must not be null")
     @Column(nullable = false)

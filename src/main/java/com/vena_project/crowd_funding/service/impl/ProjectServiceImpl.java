@@ -29,7 +29,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Project createProject(Long userId, ProjectRequestDTO project) {
         User user = userService.userInfo(userId);
-
         Project newProject = new Project();
 
         newProject.setTitle(project.getTitle());

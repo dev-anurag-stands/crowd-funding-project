@@ -1,5 +1,10 @@
 package com.vena_project.crowd_funding.dto;
 
+import com.vena_project.crowd_funding.model.Contribution;
+import com.vena_project.crowd_funding.model.Project;
+import com.vena_project.crowd_funding.model.User;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -7,17 +12,34 @@ import java.time.LocalDate;
 @Data
 public class ContributionResponseDTO {
 
-    private Long contributionId;       // contribution id
+    @NotNull(message = "Contribution ID cannot be null")
+    private Long contributionId;
 
-    private String contributorName;     // Name of the user who contributed
+    @NotBlank(message = "Contributor name cannot be blank")
+    private String contributorName;
 
-    private String projectTitle;        // Title of the project to which contribution is made
+    @NotBlank(message = "Project title cannot be blank")
+    private String projectTitle;
 
-    private String projectDescription;  // Description of the project
+    @NotBlank(message = "Project description cannot be blank")
+    private String projectDescription;
 
-    private Double amountGiven;         // Amount contributed
+    @NotNull(message = "Amount given cannot be null")
+    private Double amountGiven;
 
-    private LocalDate contributionDate; // Date of contribution
+    @NotNull(message = "Contribution date cannot be null")
+    private LocalDate contributionDate;
+
+    public void setFromContribution(Contribution contribution, User contributor, Project project) {
+        this.contributionId = contribution.getId();
+        this.contributorName = contributor.getName();
+        this.projectTitle = project.getTitle();
+        this.projectDescription = project.getDescription();
+        this.amountGiven = contribution.getAmountGiven();
+        this.contributionDate = contribution.getDate();
+    }
 }
+
+
 
 

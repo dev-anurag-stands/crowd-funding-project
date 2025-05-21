@@ -1,16 +1,15 @@
 package com.vena_project.crowd_funding.service.impl;
 
-import com.vena_project.crowd_funding.dto.ContributionRequestDTO;
 import com.vena_project.crowd_funding.dto.ContributionResponseDTO;
 import com.vena_project.crowd_funding.model.Contribution;
 import com.vena_project.crowd_funding.model.Project;
-import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import com.vena_project.crowd_funding.model.User;
+import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.repository.ContributionRepository;
-import com.vena_project.crowd_funding.repository.ProjectRepository;
-import com.vena_project.crowd_funding.repository.UserRepository;
 import com.vena_project.crowd_funding.service.ContributionService;
+import com.vena_project.crowd_funding.service.ProjectService;
+import com.vena_project.crowd_funding.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,36 +18,45 @@ import java.time.LocalDate;
 public class ContributionServiceImpl implements ContributionService {
 
     private final ContributionRepository contributionRepository;
-    private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
+    private final ProjectService projectService;
+    private final UserService userService;
 
     public ContributionServiceImpl(ContributionRepository contributionRepository,
-                                   ProjectRepository projectRepository,
-                                   UserRepository userRepository) {
+                                   ProjectService projectService,
+                                   UserService userService) {
         this.contributionRepository = contributionRepository;
-        this.projectRepository = projectRepository;
-        this.userRepository = userRepository;
+        this.projectService = projectService;
+        this.userService = userService;
     }
 
+
+     // Add a contribution for investment (profitable) type project.
     @Override
-    public ContributionResponseDTO addInvestmentContribution(Long userId, Long projectId, ContributionRequestDTO requestDTO) {
-        return addContribution(userId, projectId, requestDTO, true);
+    public ContributionResponseDTO addInvestmentContribution(Long userId, Long projectId, Double amountGiven) {
+        return addContribution(userId, projectId, amountGiven, true);
     }
 
+
+     //Add a contribution for donation (non-profitable) type project.
     @Override
-    public ContributionResponseDTO addDonationContribution(Long userId, Long projectId, ContributionRequestDTO requestDTO) {
-        return addContribution(userId, projectId, requestDTO, false);
+    public ContributionResponseDTO addDonationContribution(Long userId, Long projectId, Double amountGiven) {
+        return addContribution(userId, projectId, amountGiven, false);
     }
+     /*
+     Core logic to handle contributions (donation or investment).
+     Validates user role, project status, contribution type, and
+     atomically increments the project's funded amount in the database.
+     */
+    private ContributionResponseDTO addContribution(Long userId, Long projectId, Double amountGiven, boolean isProfitableExpected) {
+        // Fetch project details by ID
+        Project project = projectService.getProjectById(projectId);
 
-    private ContributionResponseDTO addContribution(Long userId, Long projectId, ContributionRequestDTO requestDTO, boolean isProfitableExpected) {
-
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project not found with ID: " + projectId));
-
+        // Ensure only approved projects can receive contributions
         if (!project.getProjectStatus().equals(ProjectStatus.APPROVED)) {
-            throw new RuntimeException("Only approved projects can receive contributions");
+            throw new RuntimeException("Only approved projects can receive contributions.");
         }
 
+        // Ensure user is contributing to the correct project type
         if (project.isProfitable() != isProfitableExpected) {
             String expectedType = isProfitableExpected ? "profitable (investment)" : "non-profitable (donation)";
             String actualType = project.isProfitable() ? "profitable" : "non-profitable";
@@ -56,41 +64,36 @@ public class ContributionServiceImpl implements ContributionService {
                     " project, but this project is " + actualType + ".");
         }
 
+        // Prevent contributions if target amount is already reached
         if (project.getAmountTillNow() >= project.getTotalAmountAsked()) {
             throw new RuntimeException("Project has already reached its target amount and is considered disbursed.");
         }
 
-        User contributor = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Contributor not found with ID: " + userId));
+        // Fetch contributor user details
+        User contributor = userService.userInfo(userId);
 
+        // Prevent Admins from contributing
         if (contributor.getRole().equals(UserRole.ADMIN)) {
-            throw new RuntimeException("Admins are not allowed to make contributions");
+            throw new RuntimeException("Admins are not allowed to make contributions.");
         }
 
+        // Create and populate Contribution entity
         Contribution contribution = new Contribution();
-        contribution.setProject(project);
-        contribution.setContributor(contributor);
-        contribution.setAmountGiven(requestDTO.getAmountGiven());
+        contribution.setContributorId(userId);
+        contribution.setProjectId(projectId);
+        contribution.setAmountGiven(amountGiven);
         contribution.setDate(LocalDate.now());
 
-        contributionRepository.save(contribution);
+        // Save contribution to the database
+        Contribution savedContribution = contributionRepository.save(contribution);
 
-        project.setAmountTillNow(project.getAmountTillNow() + requestDTO.getAmountGiven());
-        projectRepository.save(project);
+        // increase the current amount of the project
+        projectService.incrementAmountTillNow(projectId, amountGiven);
 
+        // Build and return the response DTO
         ContributionResponseDTO responseDTO = new ContributionResponseDTO();
-        responseDTO.setContributionId(contribution.getId());
-        responseDTO.setContributorName(contribution.getContributor().getName());
-        responseDTO.setProjectTitle(contribution.getProject().getTitle());
-        responseDTO.setProjectDescription(contribution.getProject().getDescription());
-        responseDTO.setAmountGiven(contribution.getAmountGiven());
-        responseDTO.setContributionDate(contribution.getDate());
-
+        responseDTO.setFromContribution(savedContribution, contributor, project);
 
         return responseDTO;
     }
 }
-
-
-
-
