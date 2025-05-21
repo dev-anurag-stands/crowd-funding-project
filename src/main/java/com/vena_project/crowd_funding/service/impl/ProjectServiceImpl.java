@@ -1,18 +1,15 @@
 package com.vena_project.crowd_funding.service.impl;
 
 import com.vena_project.crowd_funding.dto.*;
-import com.vena_project.crowd_funding.exception.ResourceNotFoundException;
 import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import com.vena_project.crowd_funding.repository.ProjectRepository;
-import com.vena_project.crowd_funding.repository.UserRepository;
 import com.vena_project.crowd_funding.service.ProjectService;
 import com.vena_project.crowd_funding.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,10 +17,11 @@ import java.util.stream.Collectors;
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
-    private UserService userService;
+    private final UserService userService;
 
-    ProjectServiceImpl(ProjectRepository projectRepository) {
+    ProjectServiceImpl(ProjectRepository projectRepository, UserService userService) {
         this.projectRepository = projectRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -39,7 +37,7 @@ public class ProjectServiceImpl implements ProjectService {
         newProject.setCreatedOn(LocalDate.now());
         newProject.setAmountTillNow(0.0);
 
-        return projectRepository.save(newProject);
+        return saveProject(newProject);
     }
 
     @Override
@@ -74,9 +72,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectDTO getProjectById(Long id) {
-        Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id " + id));
+    public ProjectDTO getProjectById(Long projectId) {
+        Project project = findProjectById(projectId);
+
         ProjectDTO dto = new ProjectDTO();
 
         dto.setTitle(project.getTitle());
@@ -106,12 +104,53 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void deleteProject(Long projectId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id " + projectId));
+        Project project = findProjectById(projectId);
 
         if (project.getProjectStatus() == ProjectStatus.APPROVED ) {
             throw new IllegalStateException("Only pending and rejected projects can be deleted");
         }
         projectRepository.delete(project);
+    }
+
+    @Override
+    public Project findProjectById(Long projectId) {
+        return projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found with ID: " + projectId));
+    }
+
+    @Override
+    public Project saveProject(Project project) {
+        return projectRepository.save(project);
+    }
+
+    @Override
+    public Project updateProject(Long projectId, ProjectRequestDTO dto) {
+        Project project = findProjectById(projectId);
+        if(project == null){
+            throw new RuntimeException("Project not found with ID: " + projectId);
+        }
+
+        if(project.getProjectStatus() == ProjectStatus.APPROVED){
+            throw new IllegalStateException("Only pending and rejected projects can be updated");
+        }
+
+        if(project.getProjectStatus() == ProjectStatus.REJECTED){
+            project.setProjectStatus(ProjectStatus.PENDING);
+        }
+
+        project.setTitle(dto.getTitle());
+        project.setDescription(dto.getDescription());
+        project.setTotalAmountAsked(dto.getTotalAmountAsked());
+        project.setProfitable(dto.isProfitable());
+        project.setCreatedOn(LocalDate.now());
+        return saveProject(project);
+    }
+
+    @Override
+    public void incrementAmountTillNow(Long projectId, Double amountToAdd) {
+        int updatedRows = projectRepository.incrementAmountTillNow(projectId, amountToAdd);
+        if (updatedRows == 0) {
+            throw new RuntimeException("Failed to update amount: Project not found with ID: " + projectId);
+        }
     }
 }

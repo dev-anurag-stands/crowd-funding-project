@@ -35,22 +35,27 @@ public class ProjectController {
     public ResponseEntity<List<ApprovedProjectDTO>> getApprovedProjects() {
         return new ResponseEntity<>(projectService.getApprovedProjects(), HttpStatus.OK);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProjectDTO> getProjectById(@PathVariable Long id) {
         return new ResponseEntity<>(projectService.getProjectById(id), HttpStatus.OK);
     }
+
     @GetMapping("/non-profitable")
     public ResponseEntity<List<ProjectTypeDTO>> getNonProfitableProjects() {
         return new ResponseEntity<>(projectService.getProjectsByProfitability(false), HttpStatus.OK);
     }
+
     @GetMapping("/profitable")
     public ResponseEntity<List<ProjectTypeDTO>> getProfitableProjects() {
         return new ResponseEntity<>(projectService.getProjectsByProfitability(true), HttpStatus.OK);
     }
-//    @PostMapping("/update/{projectId}")
-//    public ResponseEntity<Project> updateProject(@PathVariable Long projectId, @Valid @RequestBody Project updatedProject) {
-//        return ResponseEntity.ok(projectService.updateProject(projectId, updatedProject));
-//    }
+
+    @PostMapping("/update/{projectId}")
+    public ResponseEntity<Project> updateProject(@PathVariable Long projectId, @Valid @RequestBody ProjectRequestDTO updatedProject) {
+        return ResponseEntity.ok(projectService.updateProject(projectId, updatedProject));
+    }
+
     @DeleteMapping("/{projectId}")
     public ResponseEntity<String> deleteProject(@PathVariable Long projectId) {
         projectService.deleteProject(projectId);
