@@ -16,4 +16,5 @@ public interface UserService {
     boolean adminExists();
     void registerAdmin(User admin);
     User saveUser(User user);
+    User getUserById(Long Id);
 }

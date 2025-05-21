@@ -26,6 +26,5 @@ public class UserResponseDTO {
         this.name = user.getName();
         this.email = user.getEmail();
         this.role = user.getRole();
-
     }
 }
