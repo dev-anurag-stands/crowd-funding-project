@@ -7,9 +7,7 @@ import java.time.LocalDate;
 
 @Entity
 @Data
-public class Contribution
-{
-
+public class Contribution {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

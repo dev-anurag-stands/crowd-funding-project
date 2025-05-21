@@ -1,14 +1,16 @@
 package com.vena_project.crowd_funding.service.impl;
 
-import com.vena_project.crowd_funding.dto.LoginRequestDTO;
+import com.vena_project.crowd_funding.dto.RequestDTO.LoginRequestDTO;
+import com.vena_project.crowd_funding.dto.RequestDTO.UserRequestDTO;
 import com.vena_project.crowd_funding.dto.UpdateUserInfoDTO;
-import com.vena_project.crowd_funding.dto.UserDTO;
-import com.vena_project.crowd_funding.dto.UserInfoDTO;
+import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
 import com.vena_project.crowd_funding.exception.ResourceNotFoundException;
 import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.repository.UserRepository;
 import com.vena_project.crowd_funding.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,104 +20,87 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     public UserServiceImpl(UserRepository userRepository){
         this.userRepository = userRepository;
     }
 
     @Override
-    public List<UserInfoDTO> usersList() {
+    public List<UserResponseDTO> usersList() {
             return userRepository.findAll()
                     .stream()
                     .map(user -> {
-                        UserInfoDTO dto = new UserInfoDTO();
-                        dto.setId(user.getId());
-                        dto.setName(user.getName());
-                        dto.setEmail(user.getEmail());
-                        dto.setRole(user.getRole());
-                        return dto;
+                        UserResponseDTO userDTO = new UserResponseDTO();
+                        userDTO.convertToDTO(user);
+                        return userDTO;
                     })
                     .collect(Collectors.toList());
     }
 
     @Override
     public void updateUserInformation(Long id, UpdateUserInfoDTO updatedUserInfo) {
-        if(userRepository.findById(id).isEmpty()){
+        User user = userRepository.findById(id).orElse(null);
+        if(user == null){
             throw new ResourceNotFoundException("invalid user id");
         }
 
-        if(updatedUserInfo.getName() == null
-        || updatedUserInfo.getEmail() == null
-        || updatedUserInfo.getEmail().isBlank()
-        || updatedUserInfo.getName().isBlank()){
-            throw new IllegalArgumentException("Invalid user information");
-        }
+        logger.info("name changed from : {} to {}", user.getEmail(), updatedUserInfo.getEmail());
+        user.setEmail(updatedUserInfo.getEmail());
 
-        userRepository.findByEmail(updatedUserInfo.getEmail()).ifPresent(user -> {
-            {
-                user.setEmail(updatedUserInfo.getEmail());
-                user.setName(updatedUserInfo.getName());
-                userRepository.save(user);
-            }
-        });
-        System.out.println("user updated : "+updatedUserInfo.getName()+", email"+updatedUserInfo.getEmail());
+        logger.info("name changed from : {} to {}", user.getName(), updatedUserInfo.getName());
+        user.setName(updatedUserInfo.getName());
+
+        userRepository.save(user);
+        logger.info("User updated: {}, email: {}", updatedUserInfo.getName(), updatedUserInfo.getEmail());
     }
 
     @Override
-    public void register(UserDTO userDTO) {
-        if (userDTO == null ||
-                userDTO.getName() == null || userDTO.getName().isBlank() ||
-                userDTO.getEmail() == null || userDTO.getEmail().isBlank() ||
-                userDTO.getPassword() == null || userDTO.getPassword().isBlank()) {
-            throw new IllegalArgumentException("Invalid user: name, email, password, Role must not be null or blank.");
-        }
-
+    public void register(UserRequestDTO userDTO) {
         if(userDTO.getRole() == UserRole.ADMIN){
             throw new IllegalArgumentException("Admin cannot be registered, submit a request first.");
         }
 
-        // Check if email is already taken
         if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email already in use");
         }
 
-        // Convert DTO to Entity
         User user = new User();
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword()); // You may want to hash this!
-
+        user.updateFromRequestDTO(userDTO);
         userRepository.save(user);
+        logger.info("User registered: {}", user.getEmail());
     }
 
     @Override
     public void login(LoginRequestDTO loginRequest) {
-        // Null and blank validation
-        if (loginRequest == null ||
-                loginRequest.getEmail() == null || loginRequest.getEmail().isBlank() ||
-                loginRequest.getPassword() == null || loginRequest.getPassword().isBlank()) {
-            throw new IllegalArgumentException("Email and password must not be null or blank.");
-        }
-
-        // Find user by email
         User user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+                        .orElseThrow(() -> new IllegalArgumentException("email not found in the database"));
 
         // Compare password (plain text comparison for now)
         if (!user.getPassword().equals(loginRequest.getPassword())) {
             throw new IllegalArgumentException("Invalid email or password");
         }
 
-        System.out.println("user logged in : "+user.getName());
+        logger.info("User logged in: {}", user.getName());
     }
 
     @Override
-    public User userInfo(Long id) {
-        if(userRepository.findById(id).isEmpty()){
-            throw new ResourceNotFoundException("invalid user id");
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow( () -> new ResourceNotFoundException("user with the id : "+id+" could not be found"));
+    }
+
+    @Override
+    public UserResponseDTO userInfo(Long id) {
+        User user = getUserById(id);
+
+        if(user.getRole() == UserRole.ADMIN){
+            throw new IllegalArgumentException("Admin cannot be accessed");
         }
 
-        return userRepository.findById(id).get();
+        UserResponseDTO userDTO = new UserResponseDTO();
+        userDTO.convertToDTO(user);
+        return userDTO;
     }
 
     @Override
@@ -126,17 +111,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerAdmin(User admin) {
         userRepository.save(admin);
+        logger.info("Admin registered: {}", admin.getEmail());
     }
 
     @Override
     public User saveUser(User user){
-        if(user == null ||
-        user.getName() == null || user.getName().isBlank() ||
-        user.getEmail() == null || user.getEmail().isBlank() ||
-        user.getPassword() == null || user.getPassword().isBlank()){
-            throw new IllegalArgumentException("Invalid user: name, email, password, Role must not be null or blank.");
-        }
-
         return userRepository.save(user);
     }
 }
