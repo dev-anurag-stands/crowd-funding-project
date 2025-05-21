@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/project")
 public class ProjectController {
 
-    private ProjectService projectService;
+    private final ProjectService projectService;
 
     public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
@@ -38,7 +38,9 @@ public class ProjectController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProjectDTO> getProjectById(@PathVariable Long id) {
-        return new ResponseEntity<>(projectService.getProjectById(id), HttpStatus.OK);
+        Project project = projectService.getProjectById(id);
+        ProjectDTO dto = new ProjectDTO().convertProjectToDTO(project);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @GetMapping("/non-profitable")

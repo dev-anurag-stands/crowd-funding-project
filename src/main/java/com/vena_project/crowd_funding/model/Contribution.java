@@ -2,10 +2,9 @@ package com.vena_project.crowd_funding.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import java.time.LocalDate;
-@AllArgsConstructor
+
 @Entity
 @Data
 public class Contribution
@@ -19,13 +18,13 @@ public class Contribution
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contributor_id", nullable = false)
     @NotNull(message = "ContributorId must not be null")
-    private Long contributorId;
+    private User contributorId;
 
     // Foreign key to Project table
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id", nullable = false)
+    @JoinColumn(name = "projectId", nullable = false)
     @NotNull(message = "Project must not be null")
-    private Long projectId;
+    private Project projectId;
 
     @NotNull(message = "Amount must not be null")
     @Column(nullable = false)

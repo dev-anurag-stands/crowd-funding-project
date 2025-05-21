@@ -7,6 +7,7 @@ import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import com.vena_project.crowd_funding.repository.ProjectRepository;
 import com.vena_project.crowd_funding.service.ProjectService;
 import com.vena_project.crowd_funding.service.UserService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,7 +20,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final UserService userService;
 
-    ProjectServiceImpl(ProjectRepository projectRepository, UserService userService) {
+    ProjectServiceImpl( ProjectRepository projectRepository,  @Lazy UserService userService) {
         this.projectRepository = projectRepository;
         this.userService = userService;
     }
@@ -32,7 +33,7 @@ public class ProjectServiceImpl implements ProjectService {
         newProject.setTitle(project.getTitle());
         newProject.setDescription(project.getDescription());
         newProject.setTotalAmountAsked(project.getTotalAmountAsked());
-        newProject.setCreatedBy(user.getId());
+        newProject.setCreatedBy(user);
         newProject.setProfitable(project.isProfitable());
         newProject.setCreatedOn(LocalDate.now());
         newProject.setAmountTillNow(0.0);
@@ -72,19 +73,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectDTO getProjectById(Long projectId) {
-        Project project = findProjectById(projectId);
-
-        ProjectDTO dto = new ProjectDTO();
-
-        dto.setTitle(project.getTitle());
-        dto.setDescription(project.getDescription());
-        dto.setTotalAmountAsked(project.getTotalAmountAsked());
-        dto.setAmountTillNow(project.getAmountTillNow());
-        dto.setCreatedOn(project.getCreatedOn());
-        dto.setProfitable(project.isProfitable());
-        dto.setProjectStatus(project.getProjectStatus());
-        return dto;
+    public Project getProjectById(Long projectId) {
+        return findProjectById(projectId);
     }
 
     @Override

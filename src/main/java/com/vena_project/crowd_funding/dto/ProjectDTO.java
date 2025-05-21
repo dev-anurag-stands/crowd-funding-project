@@ -1,5 +1,6 @@
 package com.vena_project.crowd_funding.dto;
 
+import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
@@ -32,4 +33,18 @@ public class ProjectDTO {
 
     @NotNull(message = "Creation date cannot be null")
     private LocalDate createdOn;
+
+    public ProjectDTO convertProjectToDTO(Project project) {
+        ProjectDTO dto = new ProjectDTO();
+
+        dto.setTitle(project.getTitle());
+        dto.setDescription(project.getDescription());
+        dto.setTotalAmountAsked(project.getTotalAmountAsked());
+        dto.setAmountTillNow(project.getAmountTillNow());
+        dto.setCreatedOn(project.getCreatedOn());
+        dto.setProfitable(project.isProfitable());
+        dto.setProjectStatus(project.getProjectStatus());
+
+        return dto;
+    }
 }
