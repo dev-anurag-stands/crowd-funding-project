@@ -14,9 +14,4 @@ public class UpdateUserInfoDTO {
 
     @NotBlank(message = "name can not be null or empty")
     private String name;
-
-    public UpdateUserInfoDTO(User user) {
-        this.email = user.getEmail();
-        this.name = user.getName();
-    }
 }

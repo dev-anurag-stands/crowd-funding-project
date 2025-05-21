@@ -1,8 +1,6 @@
 package com.vena_project.crowd_funding.service.impl;
 
 import com.vena_project.crowd_funding.dto.UserInfoDTO;
-import com.vena_project.crowd_funding.exception.ResourceNotFoundException;
-import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.service.AdminService;
@@ -32,6 +30,7 @@ public class AdminServiceImpl implements AdminService {
     public List<UserInfoDTO> getAllUsers() {
         return userService.usersList();
     }
+
     @Override
     public List<UserInfoDTO> getUsersByRole(String role) {
         List<UserInfoDTO> allUsers = userService.usersList();

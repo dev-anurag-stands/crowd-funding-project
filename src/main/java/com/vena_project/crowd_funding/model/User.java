@@ -1,9 +1,8 @@
 package com.vena_project.crowd_funding.model;
 
+import com.vena_project.crowd_funding.dto.RequestDTO.UserRequestDTO;
 import com.vena_project.crowd_funding.model.enums.UserRole;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -16,14 +15,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "name cannot be empty string or null")
     private String name;
 
-    @Email(message = "provide a valid email address")
-    @NotBlank
     private String email;
 
-    @NotBlank(message = "provide a valid password")
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -34,4 +29,10 @@ public class User {
 
     @OneToMany(mappedBy = "contributor")
     private List<Contribution> contributions = new ArrayList<>();
+
+    public void updateFromRequestDTO(UserRequestDTO userDTO){
+        this.name = userDTO.getName();
+        this.email = userDTO.getEmail();
+        this.password = userDTO.getPassword();
+    }
 }

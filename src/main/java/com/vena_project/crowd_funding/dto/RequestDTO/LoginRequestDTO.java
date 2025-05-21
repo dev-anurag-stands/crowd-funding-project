@@ -1,4 +1,4 @@
-package com.vena_project.crowd_funding.dto;
+package com.vena_project.crowd_funding.dto.RequestDTO;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

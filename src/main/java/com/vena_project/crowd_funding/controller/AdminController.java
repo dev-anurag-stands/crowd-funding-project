@@ -1,17 +1,12 @@
 package com.vena_project.crowd_funding.controller;
 
 import com.vena_project.crowd_funding.dto.UserInfoDTO;
-import com.vena_project.crowd_funding.model.Project;
-import com.vena_project.crowd_funding.model.User;
-import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.service.AdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static com.vena_project.crowd_funding.model.enums.UserRole.ADMIN;
 
 @RestController
 @RequestMapping("/admin")

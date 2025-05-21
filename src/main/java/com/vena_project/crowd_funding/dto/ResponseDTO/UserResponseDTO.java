@@ -1,5 +1,6 @@
-package com.vena_project.crowd_funding.dto;
+package com.vena_project.crowd_funding.dto.ResponseDTO;
 
+import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.model.enums.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -7,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class UserInfoDTO {
+public class UserResponseDTO {
     @NotNull(message = "id cannot be null")
     private Long id;
 
@@ -19,4 +20,12 @@ public class UserInfoDTO {
 
     @NotNull(message = "role cannot be null")
     private UserRole role;
+
+    public void convertToDTO(User user){
+        this.id = user.getId();
+        this.name = user.getName();
+        this.email = user.getEmail();
+        this.role = user.getRole();
+
+    }
 }
