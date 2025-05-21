@@ -1,6 +1,7 @@
 package com.vena_project.crowd_funding.service.impl;
 
 import com.vena_project.crowd_funding.dto.ContributionResponseDTO;
+import com.vena_project.crowd_funding.dto.ProjectDTO;
 import com.vena_project.crowd_funding.model.Contribution;
 import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.User;

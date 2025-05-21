@@ -1,7 +1,6 @@
 package com.vena_project.crowd_funding.service;
 
 import com.vena_project.crowd_funding.dto.UserInfoDTO;
-import com.vena_project.crowd_funding.model.enums.UserRole;
 
 import java.util.List;
 
