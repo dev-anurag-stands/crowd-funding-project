@@ -6,7 +6,6 @@ import com.vena_project.crowd_funding.dto.UpdateUserInfoDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
 import com.vena_project.crowd_funding.model.User;
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
     List<UserResponseDTO> usersList();
