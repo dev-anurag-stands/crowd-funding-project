@@ -34,17 +34,13 @@ public class ProjectDTO {
     @NotNull(message = "Creation date cannot be null")
     private LocalDate createdOn;
 
-    public ProjectDTO convertProjectToDTO(Project project) {
-        ProjectDTO dto = new ProjectDTO();
-
-        dto.setTitle(project.getTitle());
-        dto.setDescription(project.getDescription());
-        dto.setTotalAmountAsked(project.getTotalAmountAsked());
-        dto.setAmountTillNow(project.getAmountTillNow());
-        dto.setCreatedOn(project.getCreatedOn());
-        dto.setProfitable(project.isProfitable());
-        dto.setProjectStatus(project.getProjectStatus());
-
-        return dto;
+    public void convertProjectToDTO(Project project) {
+        this.title = project.getTitle();
+        this.description = project.getDescription();
+        this.totalAmountAsked = project.getTotalAmountAsked();
+        this.amountTillNow = project.getAmountTillNow();
+        this.projectStatus = project.getProjectStatus();
+        this.profitable = project.isProfitable();
+        this.createdOn = project.getCreatedOn();
     }
 }
