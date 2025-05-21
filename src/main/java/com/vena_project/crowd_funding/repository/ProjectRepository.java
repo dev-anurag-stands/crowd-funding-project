@@ -17,8 +17,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findProjectsByUserId(@Param("createdBy") Long createdBy);
     List<Project> findByProjectStatus(ProjectStatus projectStatus);
     List<Project> findByProfitable(Boolean isProfitable);
-
-}
     @Modifying
     @Transactional
     @Query("UPDATE Project p SET p.amountTillNow = p.amountTillNow + :amountToAdd WHERE p.id = :projectId")
