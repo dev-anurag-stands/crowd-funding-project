@@ -1,6 +1,7 @@
 package com.vena_project.crowd_funding.controller;
 
 import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
+import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import com.vena_project.crowd_funding.service.AdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,5 +30,15 @@ public class AdminController {
     @PatchMapping("/upgrade/{userId}")
     public ResponseEntity<String> upgradeUserToAdmin(@PathVariable  Long userId) {
         return new ResponseEntity<>(adminService.upgradeUserToAdmin(userId), HttpStatus.OK);
+    }
+    @PostMapping("/projects/{projectId}/status")
+    public ResponseEntity<String> updateProjectStatus(
+            @PathVariable Long projectId,
+            @RequestParam ProjectStatus status) {
+
+        adminService.updateProjectStatus(projectId, status);
+
+        String message = "Project with ID " + projectId + " has been " + status.toString().toLowerCase() + ".";
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 }

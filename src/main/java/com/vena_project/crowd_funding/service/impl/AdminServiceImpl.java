@@ -3,7 +3,9 @@ package com.vena_project.crowd_funding.service.impl;
 import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
 import com.vena_project.crowd_funding.exception.ResourceNotFoundException;
 import com.vena_project.crowd_funding.exception.UserAlreadyAdminException;
+import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.User;
+import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.service.AdminService;
 import com.vena_project.crowd_funding.service.ProjectService;
@@ -16,8 +18,8 @@ import java.util.stream.Collectors;
 @Service
 public class AdminServiceImpl implements AdminService {
 
-    private UserService userService;
-    private ProjectService projectService;
+    private final UserService userService;
+    private final ProjectService projectService;
 
     public AdminServiceImpl(UserService userService, ProjectService projectService) {
         this.userService = userService;
@@ -54,4 +56,17 @@ public class AdminServiceImpl implements AdminService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Project updateProjectStatus(Long projectId, ProjectStatus status) {
+        Project project = projectService.findProjectById(projectId);
+
+        if (project.getProjectStatus() == status) {
+            throw new IllegalStateException("Project is already " + status.toString().toLowerCase() + ".");
+        }
+
+        project.setProjectStatus(status);
+        return projectService.saveProject(project);
+    }
+
 }
