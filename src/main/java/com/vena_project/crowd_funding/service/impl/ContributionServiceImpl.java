@@ -1,6 +1,7 @@
 package com.vena_project.crowd_funding.service.impl;
 
 import com.vena_project.crowd_funding.dto.ContributionResponseDTO;
+import com.vena_project.crowd_funding.dto.ProjectDTO;
 import com.vena_project.crowd_funding.model.Contribution;
 import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.User;
@@ -49,7 +50,7 @@ public class ContributionServiceImpl implements ContributionService {
      */
     private ContributionResponseDTO addContribution(Long userId, Long projectId, Double amountGiven, boolean isProfitableExpected) {
         // Fetch project details by ID
-        Project project = projectService.getProjectById(projectId);
+        Project project = projectService.findProjectById(projectId);
 
         // Ensure only approved projects can receive contributions
         if (!project.getProjectStatus().equals(ProjectStatus.APPROVED)) {
@@ -79,8 +80,8 @@ public class ContributionServiceImpl implements ContributionService {
 
         // Create and populate Contribution entity
         Contribution contribution = new Contribution();
-        contribution.setContributorId(userId);
-        contribution.setProjectId(projectId);
+        contribution.setContributorId(contributor);
+        contribution.setProjectId(project);
         contribution.setAmountGiven(amountGiven);
         contribution.setDate(LocalDate.now());
 
