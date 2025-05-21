@@ -1,14 +1,13 @@
-package config;
+package com.vena_project.crowd_funding.config;
 
 import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.model.enums.UserRole;
-import com.vena_project.crowd_funding.repository.UserRepository;
 import com.vena_project.crowd_funding.service.UserService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DataInitializer {
+public class DataInitializer  {
     private final UserService userService;
 
     public DataInitializer(UserService userService) {
@@ -17,12 +16,13 @@ public class DataInitializer {
 
     @PostConstruct
     public void initAdmin() {
+    System.out.println(" DataInitializer running...");
         if (!userService.adminExists()) {
             User admin = new User();
 
-            admin.setName("admin1");// hardcoded default username
+            admin.setName("admin1");
             admin.setEmail("admin1@gmail.com");
-            admin.setPassword("admin123");// hardcoded default password
+            admin.setPassword("admin123");
             admin.setRole(UserRole.ADMIN);
 
             userService.registerAdmin(admin);
@@ -32,3 +32,4 @@ public class DataInitializer {
         }
     }
 }
+

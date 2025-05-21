@@ -23,13 +23,18 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserInfoDTO>> getAllUsers(){
-        System.out.println("Admin Fetched All Users");
-        return new ResponseEntity<>(adminService.getAllUsers(), HttpStatus.OK);
+    public ResponseEntity<List<UserInfoDTO>> getUsers(@RequestParam (required = false) String role){
+
+        if(role==null ){
+            System.out.println("Admin Fetched all users");
+            return new ResponseEntity<>(adminService.getAllUsers(), HttpStatus.OK);
+        }
+        System.out.println("Admin Fetched user by role");
+        return new ResponseEntity<>(adminService.getUsersByRole(role), HttpStatus.OK);
     }
 
     @PatchMapping("/upgrade/{userId}")
-    public ResponseEntity<String> upgradeUserToAdmin(@PathVariable Long userId) {
+    public ResponseEntity<String> upgradeUserToAdmin(@PathVariable  Long userId) {
         System.out.println("Admin updated a user with id " + userId + " as Admin");
         return new ResponseEntity<>(   adminService.upgradeUserToAdmin(userId), HttpStatus.OK);
     }
