@@ -28,8 +28,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project createProject(Long userId, ProjectRequestDTO project) {
-        User user = userService.userInfo(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
+        User user = userService.userInfo(userId);
 
         Project newProject = new Project();
 
