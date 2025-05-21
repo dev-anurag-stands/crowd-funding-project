@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -101,6 +102,17 @@ public class UserServiceImpl implements UserService {
         UserResponseDTO userDTO = new UserResponseDTO();
         userDTO.convertToDTO(user);
         return userDTO;
+    }
+
+    @Override
+    public User getUserById(Long id){
+        Optional<User> user = userRepository.findById(id);
+
+        if(user.isEmpty()){
+            throw new ResourceNotFoundException("Invalid user id.");
+        }
+
+        return user.get();
     }
 
     @Override

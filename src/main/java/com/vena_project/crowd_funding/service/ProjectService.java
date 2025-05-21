@@ -2,6 +2,8 @@ package com.vena_project.crowd_funding.service;
 
 import com.vena_project.crowd_funding.dto.*;
 import com.vena_project.crowd_funding.model.Project;
+import com.vena_project.crowd_funding.model.enums.ProjectStatus;
+
 import java.util.List;
 
 public interface ProjectService {
