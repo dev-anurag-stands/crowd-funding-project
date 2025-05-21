@@ -11,4 +11,6 @@ public interface ProjectService {
     ProjectDTO getProjectById(Long id);
     List<ProjectTypeDTO> getProjectsByProfitability(boolean profitability);
     void deleteProject(Long projectId);
+    Project findProjectById(Long projectId);
+    Project saveProject(Project project);
 }
