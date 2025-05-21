@@ -15,6 +15,6 @@ public interface UserService {
     UserResponseDTO userInfo(Long id);
     boolean adminExists();
     void registerAdmin(User admin);
-    User saveUser(User user);
+    void saveUser(User user);
     User getUserById(Long Id);
 }
