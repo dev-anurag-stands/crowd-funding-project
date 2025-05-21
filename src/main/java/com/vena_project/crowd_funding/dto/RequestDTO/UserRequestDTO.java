@@ -29,6 +29,5 @@ public class UserRequestDTO {
         this.name = user.getName();
         this.email = user.getEmail();
         this.role = user.getRole();
-
     }
 }

@@ -1,8 +1,9 @@
 package com.vena_project.crowd_funding.service.impl;
 
 import com.vena_project.crowd_funding.dto.RequestDTO.LoginRequestDTO;
+import com.vena_project.crowd_funding.dto.RequestDTO.UpdatePasswordRequestDTO;
 import com.vena_project.crowd_funding.dto.RequestDTO.UserRequestDTO;
-import com.vena_project.crowd_funding.dto.UpdateUserInfoDTO;
+import com.vena_project.crowd_funding.dto.RequestDTO.UpdateUserInfoRequestDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
 import com.vena_project.crowd_funding.exception.ResourceNotFoundException;
 import com.vena_project.crowd_funding.model.User;
@@ -39,7 +40,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserInformation(Long id, UpdateUserInfoDTO updatedUserInfo) {
+    public void updateUserInformation(Long id, UpdateUserInfoRequestDTO updatedUserInfo) {
         User user = userRepository.findById(id).orElse(null);
         if(user == null){
             throw new ResourceNotFoundException("invalid user id");
@@ -101,6 +102,19 @@ public class UserServiceImpl implements UserService {
         UserResponseDTO userDTO = new UserResponseDTO();
         userDTO.convertToDTO(user);
         return userDTO;
+    }
+
+    @Override
+    public void updatePassword(Long userId, UpdatePasswordRequestDTO updatePasswordRequest) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " not found."));
+
+        if(!user.getPassword().equals(updatePasswordRequest.getOldPassword())){
+            throw new IllegalArgumentException("invalid old password provided");
+        }
+
+        user.setPassword(updatePasswordRequest.getNewPassword());
+        userRepository.save(user);
     }
 
     @Override
