@@ -1,7 +1,6 @@
 package com.vena_project.crowd_funding.model;
 
 import com.vena_project.crowd_funding.dto.RequestDTO.UserRequestDTO;
-import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
 import com.vena_project.crowd_funding.model.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -31,7 +30,7 @@ public class User {
     @OneToMany(mappedBy = "contributor")
     private List<Contribution> contributions = new ArrayList<>();
 
-    public void updateFromDTO(UserRequestDTO userDTO){
+    public void updateFromRequestDTO(UserRequestDTO userDTO){
         this.name = userDTO.getName();
         this.email = userDTO.getEmail();
         this.password = userDTO.getPassword();

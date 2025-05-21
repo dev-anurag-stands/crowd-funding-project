@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = new User();
-        user.updateFromDTO(userDTO);
+        user.updateFromRequestDTO(userDTO);
         userRepository.save(user);
         logger.info("User registered: {}", user.getEmail());
     }
