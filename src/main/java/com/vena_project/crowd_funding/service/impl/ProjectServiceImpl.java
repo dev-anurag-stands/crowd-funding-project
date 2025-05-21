@@ -73,8 +73,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project getProjectById(Long projectId) {
-        return findProjectById(projectId);
+    public ProjectDTO getProjectById(Long projectId) {
+        Project project = findProjectById(projectId);
+        ProjectDTO dto = new ProjectDTO();
+        dto.convertProjectToDTO(project);
+        return dto;
     }
 
     @Override

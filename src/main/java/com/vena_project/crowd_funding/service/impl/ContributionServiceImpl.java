@@ -50,7 +50,7 @@ public class ContributionServiceImpl implements ContributionService {
      */
     private ContributionResponseDTO addContribution(Long userId, Long projectId, Double amountGiven, boolean isProfitableExpected) {
         // Fetch project details by ID
-        Project project = projectService.getProjectById(projectId);
+        Project project = projectService.findProjectById(projectId);
 
         // Ensure only approved projects can receive contributions
         if (!project.getProjectStatus().equals(ProjectStatus.APPROVED)) {

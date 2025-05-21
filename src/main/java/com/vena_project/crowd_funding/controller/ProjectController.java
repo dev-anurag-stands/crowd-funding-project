@@ -37,10 +37,7 @@ public class ProjectController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProjectDTO> getProjectById(@PathVariable Long id) {
-        Project project = projectService.getProjectById(id);
-        ProjectDTO dto = new ProjectDTO();
-        dto.convertProjectToDTO(project);
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        return new ResponseEntity<>(projectService.getProjectById(id), HttpStatus.OK);
     }
 
     @GetMapping("/type")

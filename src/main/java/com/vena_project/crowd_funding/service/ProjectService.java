@@ -8,7 +8,7 @@ public interface ProjectService {
     Project createProject(Long userId, ProjectRequestDTO project);
     List<ProjectResponseDTO> getProjectByUserId(Long createdBy);
     List<ApprovedProjectDTO> getApprovedProjects();
-    Project getProjectById(Long id);
+    ProjectDTO getProjectById(Long id);
     List<ProjectTypeDTO> getProjectsByProfitability(boolean profitability);
     void deleteProject(Long projectId);
     Project findProjectById(Long projectId);
