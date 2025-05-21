@@ -13,4 +13,6 @@ public interface ProjectService {
     void deleteProject(Long projectId);
     Project findProjectById(Long projectId);
     Project saveProject(Project project);
+    Project updateProject(Long projectId, ProjectRequestDTO project);
+    void incrementAmountTillNow(Long projectId, Double contributedAmount);
 }

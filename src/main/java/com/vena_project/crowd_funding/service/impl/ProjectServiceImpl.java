@@ -123,4 +123,35 @@ public class ProjectServiceImpl implements ProjectService {
     public Project saveProject(Project project) {
         return projectRepository.save(project);
     }
+
+    @Override
+    public Project updateProject(Long projectId, ProjectRequestDTO dto) {
+        Project project = findProjectById(projectId);
+        if(project == null){
+            throw new RuntimeException("Project not found with ID: " + projectId);
+        }
+
+        if(project.getProjectStatus() == ProjectStatus.APPROVED){
+            throw new IllegalStateException("Only pending and rejected projects can be updated");
+        }
+
+        if(project.getProjectStatus() == ProjectStatus.REJECTED){
+            project.setProjectStatus(ProjectStatus.PENDING);
+        }
+
+        project.setTitle(dto.getTitle());
+        project.setDescription(dto.getDescription());
+        project.setTotalAmountAsked(dto.getTotalAmountAsked());
+        project.setProfitable(dto.isProfitable());
+        project.setCreatedOn(LocalDate.now());
+        return saveProject(project);
+    }
+
+    @Override
+    public void incrementAmountTillNow(Long projectId, Double amountToAdd) {
+        int updatedRows = projectRepository.incrementAmountTillNow(projectId, amountToAdd);
+        if (updatedRows == 0) {
+            throw new RuntimeException("Failed to update amount: Project not found with ID: " + projectId);
+        }
+    }
 }
