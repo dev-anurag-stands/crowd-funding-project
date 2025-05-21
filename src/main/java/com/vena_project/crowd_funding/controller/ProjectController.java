@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/project")
 public class ProjectController {
 
-    private ProjectService projectService;
+    private final ProjectService projectService;
 
     public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
@@ -22,7 +22,6 @@ public class ProjectController {
 
     @PostMapping("/create/{userId}")
     public ResponseEntity<Project> createProject (@PathVariable Long userId, @Valid @RequestBody ProjectRequestDTO project){
-        System.out.println(project);
         return new ResponseEntity<>(projectService.createProject(userId, project), HttpStatus.CREATED);
     }
 
@@ -41,14 +40,9 @@ public class ProjectController {
         return new ResponseEntity<>(projectService.getProjectById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/non-profitable")
-    public ResponseEntity<List<ProjectTypeDTO>> getNonProfitableProjects() {
-        return new ResponseEntity<>(projectService.getProjectsByProfitability(false), HttpStatus.OK);
-    }
-
-    @GetMapping("/profitable")
-    public ResponseEntity<List<ProjectTypeDTO>> getProfitableProjects() {
-        return new ResponseEntity<>(projectService.getProjectsByProfitability(true), HttpStatus.OK);
+    @GetMapping("/type")
+    public ResponseEntity<List<ProjectTypeDTO>> getNonProfitableProjects(@RequestParam boolean isProfitable) {
+        return new ResponseEntity<>(projectService.getProjectsByProfitability(isProfitable), HttpStatus.OK);
     }
 
     @PostMapping("/update/{projectId}")

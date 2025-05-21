@@ -27,7 +27,7 @@ public class User {
     @OneToMany(mappedBy = "createdBy")
     private List<Project> projects = new ArrayList<>();
 
-    @OneToMany(mappedBy = "contributor")
+    @OneToMany(mappedBy = "contributorId")
     private List<Contribution> contributions = new ArrayList<>();
 
     public void updateFromRequestDTO(UserRequestDTO userDTO){

@@ -12,13 +12,14 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ProjectRepository extends JpaRepository<Project, Long> {
-
-    @Query(value = "SELECT * FROM project WHERE created_by_id = :createdBy", nativeQuery = true)
-    List<Project> findProjectsByUserId(@Param("createdBy") Long createdBy);
-    List<Project> findByProjectStatus(ProjectStatus projectStatus);
-    List<Project> findByProfitable(Boolean isProfitable);
     @Modifying
     @Transactional
     @Query("UPDATE Project p SET p.amountTillNow = p.amountTillNow + :amountToAdd WHERE p.id = :projectId")
     int incrementAmountTillNow(Long projectId, Double amountToAdd);
+
+    @Query(value = "SELECT * FROM project WHERE created_by_id = :createdBy", nativeQuery = true)
+    List<Project> findProjectsByUserId(@Param("createdBy") Long createdBy);
+
+    List<Project> findByProjectStatus(ProjectStatus projectStatus);
+    List<Project> findByProfitable(Boolean isProfitable);
 }
