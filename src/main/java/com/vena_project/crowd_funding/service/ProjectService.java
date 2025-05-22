@@ -4,7 +4,6 @@ import com.vena_project.crowd_funding.dto.RequestDTO.ProjectRequestDTO;
 import com.vena_project.crowd_funding.dto.ProjectDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.ProjectResponseDTO;
 import com.vena_project.crowd_funding.model.Project;
-import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 
 import java.util.List;
 
