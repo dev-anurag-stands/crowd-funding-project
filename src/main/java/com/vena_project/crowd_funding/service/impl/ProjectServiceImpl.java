@@ -24,7 +24,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final UserService userService;
 
-    ProjectServiceImpl( ProjectRepository projectRepository,  @Lazy UserService userService) {
+    ProjectServiceImpl( ProjectRepository projectRepository, UserService userService) {
         this.projectRepository = projectRepository;
         this.userService = userService;
     }
@@ -123,6 +123,7 @@ public class ProjectServiceImpl implements ProjectService {
         return projectResponseDTO;
     }
 
+    @Override
     public void incrementAmountTillNow(Long projectId, Double amount) {
         Project project = findProjectById(projectId);
         double newAmount = project.getAmountTillNow() + amount;
@@ -153,7 +154,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     public List<ProjectResponseDTO> getProjects(Long userId, ProjectStatus status) {
         User user = userService.getUserById(userId);
-        System.out.println("User role: " + user.getRole());
         List<Project> projectList;
 
         if (user.getRole() == UserRole.ADMIN){
