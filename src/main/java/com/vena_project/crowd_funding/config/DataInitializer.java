@@ -4,10 +4,15 @@ import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.service.UserService;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DataInitializer  {
+public class DataInitializer {
+
+    private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
+
     private final UserService userService;
 
     public DataInitializer(UserService userService) {
@@ -16,7 +21,7 @@ public class DataInitializer  {
 
     @PostConstruct
     public void initAdmin() {
-    System.out.println(" DataInitializer running...");
+        logger.info("DataInitializer running...");
         if (!userService.adminExists()) {
             User admin = new User();
 
@@ -26,10 +31,9 @@ public class DataInitializer  {
             admin.setRole(UserRole.ADMIN);
 
             userService.registerAdmin(admin);
-            System.out.println("Default admin user created.");
+            logger.info("Default admin user created.");
         } else {
-            System.out.println("Admin user already exists, skipping creation.");
+            logger.info("Admin user already exists, skipping creation.");
         }
     }
 }
-

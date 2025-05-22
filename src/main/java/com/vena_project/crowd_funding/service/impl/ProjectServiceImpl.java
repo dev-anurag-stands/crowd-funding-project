@@ -51,32 +51,26 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectResponseDTO> getProjectByUserId(Long userId) {
-        List<Project> projectList = projectRepository.findProjectsByUserId(userId);
-        return projectList.stream().map(project -> {
-            ProjectResponseDTO dto = new ProjectResponseDTO();
-            dto.setTitle(project.getTitle());
-            dto.setDescription(project.getDescription());
-            dto.setTotalAmountAsked(project.getTotalAmountAsked());
-            dto.setAmountTillNow(project.getAmountTillNow());
-            dto.setProjectStatus(project.getProjectStatus());
-            dto.setProfitable(project.isProfitable());
-            return dto;
-        }).collect(Collectors.toList());
-    }
+    public List<ProjectResponseDTO> getProjects(Long userId, ProjectStatus status) {
+        User user = userService.getUserById(userId);
 
-    @Override
-    public List<ProjectResponseDTO> getProjects(ProjectStatus status) {
-        List<Project> projectList = (status == null)
-                ? projectRepository.findAll()
-                : projectRepository.findByProjectStatus(status);
+        List<Project> projectList;
+
+        if (user.getRole().equals("ADMIN")) {
+            projectList = (status == null)
+                    ? projectRepository.findAll()
+                    : projectRepository.findByProjectStatus(status);
+        } else {
+            projectList = (status == null)
+                    ? projectRepository.findProjectsByUserId(userId)
+                    : projectRepository.findProjectsByCreatedByIdAndProjectStatus(userId, status);
+        }
 
         if (projectList.isEmpty()) {
             throw new ResourceNotFoundException(
                     status == null
-                            ? "No projects found in the system."
-                            : "No projects found with status " + status +"."
-            );
+                            ? "No projects found."
+                            : "No projects found with status " + status + ".");
         }
 
         return projectList.stream()

@@ -28,14 +28,11 @@ public class ProjectController {
         return new ResponseEntity<>(projectService.createProject(userId, project), HttpStatus.CREATED);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ProjectResponseDTO>> getProjectsByUser(@PathVariable Long userId) {
-        return new ResponseEntity<>(projectService.getProjectByUserId(userId), HttpStatus.OK);
-    }
-
-    @GetMapping("/projects")
-    public ResponseEntity<List<ProjectResponseDTO>> getAllProjects(@RequestParam(required = false) ProjectStatus status) {
-        return new ResponseEntity<>(projectService.getProjects(status),HttpStatus.OK);
+    @GetMapping("/projects/{userId}")
+    public ResponseEntity<List<ProjectResponseDTO>> getAllProjects(
+            @PathVariable Long userId,
+            @RequestParam(required = false) ProjectStatus status) {
+        return new ResponseEntity<>(projectService.getProjects(userId, status), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
