@@ -62,10 +62,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO register(UserRequestDTO userDTO) {
-        if(userDTO.getRole() == UserRole.ADMIN){
-            throw new IllegalArgumentException("Admin cannot be registered, submit a request first.");
-        }
-
         if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email already in use");
         }
