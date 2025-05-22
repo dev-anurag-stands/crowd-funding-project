@@ -12,5 +12,5 @@ public interface AdminService {
     List<UserResponseDTO> getUsersByRole(String role);
     List<UserResponseDTO>getAllUsers();
     Project updateProjectStatus(Long projectId, ProjectStatus status);
-    List<ProjectDTO> getProjectsByStatus(String status);
+    List<ProjectDTO> getRejectedProjects();
 }

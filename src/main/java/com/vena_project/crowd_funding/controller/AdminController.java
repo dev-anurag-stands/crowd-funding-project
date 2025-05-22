@@ -43,9 +43,10 @@ public class AdminController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
-    @GetMapping("/projects")
-    public ResponseEntity<List<ProjectDTO>> getProjectsByStatus(@RequestParam String status) {
-        List<ProjectDTO> projects = adminService.getProjectsByStatus(status.toUpperCase());
+    @GetMapping("/projects/rejected")
+    public ResponseEntity<List<ProjectDTO>> getRejectedProjects() {
+        List<ProjectDTO> projects = adminService.getRejectedProjects();
         return new ResponseEntity<>(projects, HttpStatus.OK);
     }
+
 }

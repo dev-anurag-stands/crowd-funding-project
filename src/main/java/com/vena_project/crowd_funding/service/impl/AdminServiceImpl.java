@@ -54,21 +54,26 @@ public class AdminServiceImpl implements AdminService {
                 .collect(Collectors.toList());
     }
 
-    @Override
     public Project updateProjectStatus(Long projectId, ProjectStatus status) {
 
         Project project = projectService.findProjectById(projectId);
+
+        if (project.getProjectStatus() != ProjectStatus.PENDING) {
+            throw new IllegalStateException("Project status has already been set to "
+                    + project.getProjectStatus().name().toLowerCase() + " and cannot be changed again.");
+        }
         if (project.getProjectStatus() == status) {
             throw new IllegalStateException("Project is already " + status.toString().toLowerCase() + ".");
         }
         project.setProjectStatus(status);
         return projectService.saveProject(project);
     }
-    public List<ProjectDTO> getProjectsByStatus(String status) {
+
+    public List<ProjectDTO> getRejectedProjects() {
         List<Project> allProjects = projectService.getAllProjects();
 
-        List<ProjectDTO> filteredProjects = allProjects.stream()
-                .filter(project -> status.equalsIgnoreCase(project.getProjectStatus().name()))
+        List<ProjectDTO> rejectedProjects = allProjects.stream()
+                .filter(project -> project.getProjectStatus() == ProjectStatus.REJECTED)
                 .map(project -> {
                     ProjectDTO dto = new ProjectDTO();
                     dto.convertProjectToDTO(project);
@@ -76,11 +81,11 @@ public class AdminServiceImpl implements AdminService {
                 })
                 .collect(Collectors.toList());
 
-        if (filteredProjects.isEmpty()) {
-            throw new ResourceNotFoundException("No projects found with status: " + status);
+        if (rejectedProjects.isEmpty()) {
+            throw new ResourceNotFoundException("No rejected projects found.");
         }
 
-        return filteredProjects;
+        return rejectedProjects;
     }
 
 }
