@@ -1,8 +1,9 @@
 package com.vena_project.crowd_funding.service.impl;
 
 import com.vena_project.crowd_funding.dto.*;
-import com.vena_project.crowd_funding.dto.ResponseDTO.ProjectResponseDTO;
 import com.vena_project.crowd_funding.dto.RequestDTO.ProjectRequestDTO;
+import com.vena_project.crowd_funding.dto.ResponseDTO.ProjectResponseDTO;
+import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
 import com.vena_project.crowd_funding.exception.ResourceNotFoundException;
 import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.User;
@@ -152,5 +153,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
+    }
+    @Override
+    public Project getProjectEntityById(Long projectId) {
+        return projectRepository.findById(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("Project not found with id: " + projectId));
     }
 }

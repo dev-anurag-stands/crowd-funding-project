@@ -1,17 +1,16 @@
 package com.vena_project.crowd_funding.controller;
-
-import com.vena_project.crowd_funding.dto.ContributionResponseDTO;
+import com.vena_project.crowd_funding.dto.RequestDTO.ContributionRequestDTO;
+import com.vena_project.crowd_funding.dto.ResponseDTO.ContributionResponseDTO;
 import com.vena_project.crowd_funding.service.ContributionService;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
 
 @RestController
-@RequestMapping("/contribute")
-@Validated
+@RequestMapping("/contribution")
 public class ContributionController {
 
     private final ContributionService contributionService;
@@ -20,28 +19,32 @@ public class ContributionController {
         this.contributionService = contributionService;
     }
 
-    @PostMapping("/invest/{userId}/{projectId}")
-    public ResponseEntity<ContributionResponseDTO> invest(
-            @PathVariable Long userId,
+    // POST /contribution/{projectId}
+    @PostMapping("/{projectId}")
+    public ResponseEntity<ContributionResponseDTO> makeContribution(
             @PathVariable Long projectId,
-            @RequestParam @NotNull(message = "Amount must not be null")
-            @Min(value = 1, message = "Amount must be at least ₹1 or a positive value") Double amountGiven) {
-
-        ContributionResponseDTO responseDTO = contributionService.addInvestmentContribution(userId, projectId, amountGiven);
+            @Valid @RequestBody ContributionRequestDTO contributionRequestDTO) {
+        ContributionResponseDTO responseDTO = contributionService.makeContribution(projectId, contributionRequestDTO);
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
-    @PostMapping("/donate/{userId}/{projectId}")
-    public ResponseEntity<ContributionResponseDTO> donate(
-            @PathVariable Long userId,
-            @PathVariable Long projectId,
-            @RequestParam @NotNull(message = "Amount must not be null")
-            @Min(value = 1, message = "Amount must be at least ₹1 or a positive value") Double amountGiven) {
-
-        ContributionResponseDTO responseDTO = contributionService.addDonationContribution(userId, projectId, amountGiven);
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+    // GET /contribution/{userId}
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<ContributionResponseDTO>> getUserContributions(
+            @PathVariable Long userId) {
+        List<ContributionResponseDTO> responseList = contributionService.getUserContributions(userId);
+        return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
+
+    // GET /contribution/{projectId}/{userId}
+    @GetMapping("/{userId}/{projectId}")
+    public ResponseEntity<List<ContributionResponseDTO>> getContributionsOnUserProject(
+            @PathVariable Long projectId,
+            @PathVariable Long userId) {
+        List<ContributionResponseDTO> responseList = contributionService.getContributionsOnProject(projectId, userId);
+        return new ResponseEntity<>(responseList, HttpStatus.OK);
+    }
+
 }
-
 
 

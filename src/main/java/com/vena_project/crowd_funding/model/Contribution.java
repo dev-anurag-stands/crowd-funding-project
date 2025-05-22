@@ -14,21 +14,19 @@ public class Contribution {
 
     // Foreign key to User table
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contributor_id", nullable = false)
-    @NotNull(message = "ContributorId must not be null")
-    private User contributorId;
+    @JoinColumn(name = "contributorId", nullable = false)
+    private User contributor;
 
     // Foreign key to Project table
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "projectId", nullable = false)
-    @NotNull(message = "Project must not be null")
-    private Project projectId;
+    private Project project;
 
-    @NotNull(message = "Amount must not be null")
+
     @Column(nullable = false)
     private Double amountGiven;
 
-    @NotNull(message = "Date must not be null")
+
     @Column(nullable = false)
     private LocalDate date;
 }

@@ -1,7 +1,6 @@
-package com.vena_project.crowd_funding.dto;
+package com.vena_project.crowd_funding.dto.ResponseDTO;
 
 import com.vena_project.crowd_funding.model.Contribution;
-import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,7 +29,7 @@ public class ContributionResponseDTO {
     @NotNull(message = "Contribution date cannot be null")
     private LocalDate contributionDate;
 
-    public void setFromContribution(Contribution contribution, User contributor, Project project) {
+    public void setFromContribution(Contribution contribution, User contributor, ProjectResponseDTO project) {
         this.contributionId = contribution.getId();
         this.contributorName = contributor.getName();
         this.projectTitle = project.getTitle();

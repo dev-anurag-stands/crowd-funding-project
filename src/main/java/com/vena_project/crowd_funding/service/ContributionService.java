@@ -1,11 +1,19 @@
 package com.vena_project.crowd_funding.service;
 
-import com.vena_project.crowd_funding.dto.ContributionResponseDTO;
+import com.vena_project.crowd_funding.dto.RequestDTO.ContributionRequestDTO;
+import com.vena_project.crowd_funding.dto.ResponseDTO.ContributionResponseDTO;
+
+import java.util.List;
 
 public interface ContributionService {
-    ContributionResponseDTO addInvestmentContribution(Long userId, Long projectId, Double amountGiven);
-    ContributionResponseDTO addDonationContribution(Long userId, Long projectId, Double amountGiven);
+
+    ContributionResponseDTO makeContribution(Long projectId, ContributionRequestDTO dto);
+
+    List<ContributionResponseDTO> getUserContributions(Long userId);
+
+    List<ContributionResponseDTO> getContributionsOnProject(Long projectId, Long requesterId);
 }
+
 
 
 
