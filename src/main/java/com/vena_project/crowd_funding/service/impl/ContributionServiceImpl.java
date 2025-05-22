@@ -54,8 +54,8 @@ public class ContributionServiceImpl implements ContributionService {
             logger.warn("Contribution rejected - Project ID {} is not approved.", projectId);
             throw new IllegalArgumentException("User can only contribute to an approved project.");
         }
-
-        if (projectEntity.getAmountTillNow() >= projectEntity.getTotalAmountAsked()) {
+        double newTotal = projectEntity.getAmountTillNow() + dto.getAmountGiven();
+        if (newTotal > projectEntity.getTotalAmountAsked()) {
             logger.warn("Contribution rejected - Project ID {} has reached its funding goal.", projectId);
             throw new IllegalArgumentException("Asked amount is already reached. Cannot accept more contributions.");
         }
