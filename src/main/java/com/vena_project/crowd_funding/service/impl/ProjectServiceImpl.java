@@ -133,6 +133,23 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.findAll();
     }
 
+    @Override
+    public List<ProjectDTO> getApprovedProjects() {
+        List<Project> projectList = projectRepository.findByProjectStatus(ProjectStatus.APPROVED);
+        return projectList.stream().map(project -> {
+                    ProjectDTO dto = new ProjectDTO();
+                    dto.setProjectId(project.getProjectId());
+                    dto.setTitle(project.getTitle());
+                    dto.setDescription(project.getDescription());
+                    dto.setTotalAmountAsked(project.getTotalAmountAsked());
+                    dto.setAmountTillNow(project.getAmountTillNow());
+                    dto.setProfitable(project.isProfitable());
+                    dto.setCreatedOn(project.getCreatedOn());
+                    return dto;
+                }
+        ).toList();
+    }
+
     public List<ProjectResponseDTO> getProjects(Long userId, ProjectStatus status) {
         User user = userService.getUserById(userId);
 
