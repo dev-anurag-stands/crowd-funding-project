@@ -1,8 +1,9 @@
 package com.vena_project.crowd_funding.service.impl;
 
 import com.vena_project.crowd_funding.dto.RequestDTO.LoginRequestDTO;
+import com.vena_project.crowd_funding.dto.RequestDTO.UpdatePasswordRequestDTO;
 import com.vena_project.crowd_funding.dto.RequestDTO.UserRequestDTO;
-import com.vena_project.crowd_funding.dto.UpdateUserInfoDTO;
+import com.vena_project.crowd_funding.dto.RequestDTO.UpdateUserInfoRequestDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
 import com.vena_project.crowd_funding.exception.ResourceNotFoundException;
 import com.vena_project.crowd_funding.model.User;
@@ -39,24 +40,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserInformation(Long id, UpdateUserInfoDTO updatedUserInfo) {
-        User user = userRepository.findById(id).orElse(null);
-        if(user == null){
-            throw new ResourceNotFoundException("invalid user id");
+    public UserResponseDTO updateUserInformation(Long id, UpdateUserInfoRequestDTO updatedUserInfo) {
+        User user = getUserById(id);
+
+        if(!user.getEmail().equals(updatedUserInfo.getEmail())){
+            logger.info("name changed from : {} to {}", user.getEmail(), updatedUserInfo.getEmail());
+            user.setEmail(updatedUserInfo.getEmail());
         }
 
-        logger.info("name changed from : {} to {}", user.getEmail(), updatedUserInfo.getEmail());
-        user.setEmail(updatedUserInfo.getEmail());
-
-        logger.info("name changed from : {} to {}", user.getName(), updatedUserInfo.getName());
-        user.setName(updatedUserInfo.getName());
-
+        if(!user.getName().equals(updatedUserInfo.getName())){
+            logger.info("name changed from : {} to {}", user.getName(), updatedUserInfo.getName());
+            user.setName(updatedUserInfo.getName());
+        }
         userRepository.save(user);
         logger.info("User updated: {}, email: {}", updatedUserInfo.getName(), updatedUserInfo.getEmail());
+
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
+        userResponseDTO.convertToDTO(user);
+        return userResponseDTO;
     }
 
     @Override
-    public void register(UserRequestDTO userDTO) {
+    public UserResponseDTO register(UserRequestDTO userDTO) {
         if(userDTO.getRole() == UserRole.ADMIN){
             throw new IllegalArgumentException("Admin cannot be registered, submit a request first.");
         }
@@ -68,7 +73,11 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.updateFromRequestDTO(userDTO);
         userRepository.save(user);
+
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
+        userResponseDTO.convertToDTO(user);
         logger.info("User registered: {}", user.getEmail());
+        return userResponseDTO;
     }
 
     @Override
@@ -101,6 +110,18 @@ public class UserServiceImpl implements UserService {
         UserResponseDTO userDTO = new UserResponseDTO();
         userDTO.convertToDTO(user);
         return userDTO;
+    }
+
+    @Override
+    public void updatePassword(Long userId, UpdatePasswordRequestDTO updatePasswordRequest) {
+        User user = getUserById(userId);
+
+        if(!user.getPassword().equals(updatePasswordRequest.getOldPassword())){
+            throw new IllegalArgumentException("invalid old password provided");
+        }
+
+        user.setPassword(updatePasswordRequest.getNewPassword());
+        userRepository.save(user);
     }
 
     @Override

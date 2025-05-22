@@ -1,19 +1,19 @@
 package com.vena_project.crowd_funding.service.impl;
 
-import com.vena_project.crowd_funding.dto.*;
 import com.vena_project.crowd_funding.dto.RequestDTO.ProjectRequestDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.ProjectResponseDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
+import com.vena_project.crowd_funding.exception.CreateAccessException;
 import com.vena_project.crowd_funding.exception.ResourceNotFoundException;
 import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.model.enums.ProjectStatus;
+import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.repository.ProjectRepository;
 import com.vena_project.crowd_funding.service.ProjectService;
 import com.vena_project.crowd_funding.service.UserService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +32,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Project createProject(Long userId, ProjectRequestDTO project) {
         User user = userService.getUserById(userId);
+
+        if(user.getRole() == UserRole.ADMIN){
+            throw new CreateAccessException("Admins cannot create projects.");
+        }
+
         Project newProject = new Project();
 
         newProject.setTitle(project.getTitle());

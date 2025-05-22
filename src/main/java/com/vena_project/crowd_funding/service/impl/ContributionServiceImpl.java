@@ -4,6 +4,7 @@ import com.vena_project.crowd_funding.dto.RequestDTO.ContributionRequestDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.ContributionResponseDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.ProjectResponseDTO;
 import com.vena_project.crowd_funding.exception.AccessDeniedForAdminException;
+import com.vena_project.crowd_funding.dto.ContributionResponseDTO;
 import com.vena_project.crowd_funding.model.Contribution;
 import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.User;
