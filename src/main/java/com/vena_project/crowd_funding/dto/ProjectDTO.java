@@ -21,7 +21,6 @@ public class ProjectDTO {
 
     @NotNull(message = "Total amount asked cannot be null")
     private double totalAmountAsked;
-
     @NotNull(message = "Amount collected so far cannot be null")
     private double amountTillNow;
 

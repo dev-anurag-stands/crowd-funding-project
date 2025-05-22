@@ -1,5 +1,6 @@
 package com.vena_project.crowd_funding.service.impl;
 
+import com.vena_project.crowd_funding.dto.ProjectDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
 import com.vena_project.crowd_funding.exception.ResourceNotFoundException;
 import com.vena_project.crowd_funding.exception.UserAlreadyAdminException;
@@ -29,10 +30,6 @@ public class AdminServiceImpl implements AdminService {
     public String upgradeUserToAdmin(Long userId) {
         User user = userService.getUserById(userId);
 
-        if (user == null) {
-            throw new ResourceNotFoundException("User with id " + userId + " does not exist.");
-        }
-
         if (user.getRole() == UserRole.ADMIN) {
             throw new UserAlreadyAdminException("User with id " + userId + " is already an ADMIN.");
         }
@@ -46,12 +43,12 @@ public class AdminServiceImpl implements AdminService {
     public List<UserResponseDTO> getAllUsers() {
         return userService.usersList();
     }
+
     @Override
     public List<UserResponseDTO> getUsersByRole(String role) {
-        List<UserResponseDTO> allUsers = userService.usersList();
-        return allUsers.stream()
+
+        return userService.usersList().stream()
                 .filter(user -> {
-                    System.out.println(user.getRole().toString().equalsIgnoreCase(role));
                     return user.getRole().toString().equalsIgnoreCase(role);
                 })
                 .collect(Collectors.toList());
@@ -59,14 +56,31 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Project updateProjectStatus(Long projectId, ProjectStatus status) {
-        Project project = projectService.findProjectById(projectId);
 
+        Project project = projectService.findProjectById(projectId);
         if (project.getProjectStatus() == status) {
             throw new IllegalStateException("Project is already " + status.toString().toLowerCase() + ".");
         }
-
         project.setProjectStatus(status);
         return projectService.saveProject(project);
+    }
+    public List<ProjectDTO> getProjectsByStatus(String status) {
+        List<Project> allProjects = projectService.getAllProjects();
+
+        List<ProjectDTO> filteredProjects = allProjects.stream()
+                .filter(project -> status.equalsIgnoreCase(project.getProjectStatus().name()))
+                .map(project -> {
+                    ProjectDTO dto = new ProjectDTO();
+                    dto.convertProjectToDTO(project);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        if (filteredProjects.isEmpty()) {
+            throw new ResourceNotFoundException("No projects found with status: " + status);
+        }
+
+        return filteredProjects;
     }
 
 }

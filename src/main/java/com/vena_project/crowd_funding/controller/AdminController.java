@@ -1,5 +1,6 @@
 package com.vena_project.crowd_funding.controller;
 
+import com.vena_project.crowd_funding.dto.ProjectDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
 import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import com.vena_project.crowd_funding.service.AdminService;
@@ -20,7 +21,6 @@ public class AdminController {
 
     @GetMapping("/users")
     public ResponseEntity<List<UserResponseDTO>> getUsers(@RequestParam (required = false) String role){
-
         if(role==null ){
             return new ResponseEntity<>(adminService.getAllUsers(), HttpStatus.OK);
         }
@@ -31,7 +31,8 @@ public class AdminController {
     public ResponseEntity<String> upgradeUserToAdmin(@PathVariable  Long userId) {
         return new ResponseEntity<>(adminService.upgradeUserToAdmin(userId), HttpStatus.OK);
     }
-    @PostMapping("/projects/{projectId}/status")
+
+    @PatchMapping("/project/{projectId}")
     public ResponseEntity<String> updateProjectStatus(
             @PathVariable Long projectId,
             @RequestParam ProjectStatus status) {
@@ -40,5 +41,11 @@ public class AdminController {
 
         String message = "Project with ID " + projectId + " has been " + status.toString().toLowerCase() + ".";
         return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    @GetMapping("/projects")
+    public ResponseEntity<List<ProjectDTO>> getProjectsByStatus(@RequestParam String status) {
+        List<ProjectDTO> projects = adminService.getProjectsByStatus(status.toUpperCase());
+        return new ResponseEntity<>(projects, HttpStatus.OK);
     }
 }
