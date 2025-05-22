@@ -1,6 +1,8 @@
 package com.vena_project.crowd_funding.controller;
 
-import com.vena_project.crowd_funding.dto.UserInfoDTO;
+import com.vena_project.crowd_funding.dto.ProjectDTO;
+import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
+import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import com.vena_project.crowd_funding.service.AdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,20 +20,33 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserInfoDTO>> getUsers(@RequestParam (required = false) String role){
-
+    public ResponseEntity<List<UserResponseDTO>> getUsers(@RequestParam (required = false) String role){
         if(role==null ){
-            System.out.println("Admin Fetched all users");
             return new ResponseEntity<>(adminService.getAllUsers(), HttpStatus.OK);
         }
-        System.out.println("Admin Fetched user by role");
         return new ResponseEntity<>(adminService.getUsersByRole(role), HttpStatus.OK);
     }
 
     @PatchMapping("/upgrade/{userId}")
     public ResponseEntity<String> upgradeUserToAdmin(@PathVariable  Long userId) {
-        System.out.println("Admin updated a user with id " + userId + " as Admin");
-        return new ResponseEntity<>(   adminService.upgradeUserToAdmin(userId), HttpStatus.OK);
+        return new ResponseEntity<>(adminService.upgradeUserToAdmin(userId), HttpStatus.OK);
+    }
+
+    @PatchMapping("/project/{projectId}")
+    public ResponseEntity<String> updateProjectStatus(
+            @PathVariable Long projectId,
+            @RequestParam ProjectStatus status) {
+
+        adminService.updateProjectStatus(projectId, status);
+
+        String message = "Project with ID " + projectId + " has been " + status.toString().toLowerCase() + ".";
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    @GetMapping("/projects/rejected")
+    public ResponseEntity<List<ProjectDTO>> getRejectedProjects() {
+        List<ProjectDTO> projects = adminService.getRejectedProjects();
+        return new ResponseEntity<>(projects, HttpStatus.OK);
     }
 
 }

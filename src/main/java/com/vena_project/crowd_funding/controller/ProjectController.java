@@ -1,6 +1,8 @@
 package com.vena_project.crowd_funding.controller;
 
 import com.vena_project.crowd_funding.dto.*;
+import com.vena_project.crowd_funding.dto.RequestDTO.ProjectRequestDTO;
+import com.vena_project.crowd_funding.dto.ResponseDTO.ProjectResponseDTO;
 import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.service.ProjectService;
 import jakarta.validation.Valid;
@@ -31,17 +33,17 @@ public class ProjectController {
     }
 
     @GetMapping("/approved")
-    public ResponseEntity<List<ApprovedProjectDTO>> getApprovedProjects() {
+    public ResponseEntity<List<ProjectDTO>> getApprovedProjects() {
         return new ResponseEntity<>(projectService.getApprovedProjects(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProjectDTO> getProjectById(@PathVariable Long id) {
+    public ResponseEntity<ProjectResponseDTO> getProjectById(@PathVariable Long id) {
         return new ResponseEntity<>(projectService.getProjectById(id), HttpStatus.OK);
     }
 
     @GetMapping("/type")
-    public ResponseEntity<List<ProjectTypeDTO>> getNonProfitableProjects(@RequestParam boolean isProfitable) {
+    public ResponseEntity<List<ProjectDTO>> getNonProfitableProjects(@RequestParam boolean isProfitable) {
         return new ResponseEntity<>(projectService.getProjectsByProfitability(isProfitable), HttpStatus.OK);
     }
 
