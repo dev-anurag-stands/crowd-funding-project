@@ -3,7 +3,6 @@ package com.vena_project.crowd_funding.controller;
 import com.vena_project.crowd_funding.dto.RequestDTO.LoginRequestDTO;
 import com.vena_project.crowd_funding.dto.RequestDTO.UserRequestDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
-import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
