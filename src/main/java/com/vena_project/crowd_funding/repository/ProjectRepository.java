@@ -13,7 +13,7 @@ import java.util.List;
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Modifying
     @Transactional
-    @Query("UPDATE Project p SET p.amountTillNow = p.amountTillNow + :amountToAdd WHERE p.id = :projectId")
+    @Query("UPDATE Project p SET p.amountTillNow = p.amountTillNow + :amountToAdd WHERE p.projectId = :projectId")
     int incrementAmountTillNow(Long projectId, Double amountToAdd);
 
     @Query(value = "SELECT * FROM project WHERE created_by_id = :createdBy", nativeQuery = true)
@@ -23,6 +23,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findProjectsByCreatedByIdAndProjectStatus(@Param("userId") Long userId, @Param("status") ProjectStatus status);
 
     List<Project> findByProjectStatus(ProjectStatus projectStatus);
-    List<Project> findByProfitable(Boolean isProfitable);
+    List<Project> findByProfitableAndProjectStatus(Boolean isProfitable, ProjectStatus projectStatus);
 
 }

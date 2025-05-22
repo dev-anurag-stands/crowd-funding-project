@@ -28,7 +28,7 @@ public class ProjectController {
         return new ResponseEntity<>(projectService.createProject(userId, project), HttpStatus.CREATED);
     }
 
-    @GetMapping("/projects/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<ProjectResponseDTO>> getAllProjects(
             @PathVariable Long userId,
             @RequestParam(required = false) ProjectStatus status) {
@@ -41,12 +41,12 @@ public class ProjectController {
     }
 
     @GetMapping("/type")
-    public ResponseEntity<List<ProjectDTO>> getNonProfitableProjects(@RequestParam boolean isProfitable) {
+    public ResponseEntity<List<ProjectDTO>> getProjectsByType(@RequestParam boolean isProfitable) {
         return new ResponseEntity<>(projectService.getProjectsByProfitability(isProfitable), HttpStatus.OK);
     }
 
     @PostMapping("/update/{projectId}")
-    public ResponseEntity<Project> updateProject(@PathVariable Long projectId, @Valid @RequestBody ProjectRequestDTO updatedProject) {
+    public ResponseEntity<ProjectResponseDTO> updateProject(@PathVariable Long projectId, @Valid @RequestBody ProjectRequestDTO updatedProject) {
         return ResponseEntity.ok(projectService.updateProject(projectId, updatedProject));
     }
 

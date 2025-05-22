@@ -10,14 +10,13 @@ import java.util.List;
 
 public interface ProjectService {
     Project createProject(Long userId, ProjectRequestDTO project);
-    List<ProjectResponseDTO> getProjectByUserId(Long createdBy);
     List<ProjectResponseDTO> getProjects(Long userId, ProjectStatus status);
     ProjectResponseDTO getProjectById(Long id);
     List<ProjectDTO> getProjectsByProfitability(boolean profitability);
     void deleteProject(Long projectId);
     Project findProjectById(Long projectId);
     Project saveProject(Project project);
-    Project updateProject(Long projectId, ProjectRequestDTO project);
+    ProjectResponseDTO updateProject(Long projectId, ProjectRequestDTO project);
     void incrementAmountTillNow(Long projectId, Double contributedAmount);
     List<Project> getAllProjects();
 
