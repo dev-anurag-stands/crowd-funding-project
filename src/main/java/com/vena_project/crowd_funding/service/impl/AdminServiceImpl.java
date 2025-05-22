@@ -1,13 +1,16 @@
 package com.vena_project.crowd_funding.service.impl;
 
+import com.vena_project.crowd_funding.dto.ResponseDTO.ContributionResponseDTO;
+import com.vena_project.crowd_funding.dto.ResponseDTO.ProjectResponseDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
-import com.vena_project.crowd_funding.exception.ResourceNotFoundException;
 import com.vena_project.crowd_funding.exception.UserAlreadyAdminException;
+import com.vena_project.crowd_funding.model.Contribution;
 import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.service.AdminService;
+import com.vena_project.crowd_funding.service.ContributionService;
 import com.vena_project.crowd_funding.service.ProjectService;
 import com.vena_project.crowd_funding.service.UserService;
 import org.slf4j.Logger;
@@ -24,8 +27,10 @@ public class AdminServiceImpl implements AdminService {
 
     private final UserService userService;
     private final ProjectService projectService;
+    private final ContributionService contributionService;
 
-    public AdminServiceImpl(UserService userService, ProjectService projectService) {
+    public AdminServiceImpl(ContributionService contributionService, UserService userService, ProjectService projectService) {
+        this.contributionService = contributionService;
         this.userService = userService;
         this.projectService = projectService;
     }
@@ -91,5 +96,20 @@ public class AdminServiceImpl implements AdminService {
 
         logger.info("Project id {} status updated to {}", projectId, status);
         return savedProject;
+    }
+
+    @Override
+    public List<ContributionResponseDTO> getAllContributions() {
+
+        List<Contribution> contributions = contributionService.getAllContributions();
+
+        return contributions.stream().map(contribution -> {
+            User contributor = userService.getUserById(contribution.getContributor().getId());
+            ProjectResponseDTO projectDTO = projectService.getProjectById(contribution.getProject().getProjectId());
+
+            ContributionResponseDTO dto = new ContributionResponseDTO();
+            dto.setFromContribution(contribution, contributor, projectDTO);
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

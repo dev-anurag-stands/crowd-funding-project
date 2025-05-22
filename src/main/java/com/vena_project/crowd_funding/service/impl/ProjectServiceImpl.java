@@ -12,6 +12,7 @@ import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.repository.ProjectRepository;
 import com.vena_project.crowd_funding.service.ProjectService;
 import com.vena_project.crowd_funding.service.UserService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
@@ -114,6 +115,7 @@ public class ProjectServiceImpl implements ProjectService {
         project.setProfitable(dto.isProfitable());
         project.setCreatedOn(LocalDate.now());
 
+
         Project savedProject = saveProject(project);
         ProjectResponseDTO projectResponseDTO = new ProjectResponseDTO();
         projectResponseDTO.convertProjectToDTO(savedProject);
@@ -152,12 +154,11 @@ public class ProjectServiceImpl implements ProjectService {
 
     public List<ProjectResponseDTO> getProjects(Long userId, ProjectStatus status) {
         User user = userService.getUserById(userId);
-
         List<Project> projectList;
 
-        if (user.getRole().equals(UserRole.ADMIN)) {
+        if (user.getRole() == UserRole.ADMIN){
             projectList = (status == null)
-                    ? getAllProjects()
+                    ? projectRepository.findAll()
                     : projectRepository.findByProjectStatus(status);
         } else {
             projectList = (status == null)

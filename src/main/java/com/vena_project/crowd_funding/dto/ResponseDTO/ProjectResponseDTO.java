@@ -1,7 +1,6 @@
 package com.vena_project.crowd_funding.dto.ResponseDTO;
 
 import com.vena_project.crowd_funding.model.Project;
-import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import jakarta.persistence.*;
 import lombok.Data;
