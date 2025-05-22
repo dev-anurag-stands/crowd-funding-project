@@ -66,19 +66,26 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectDTO> getApprovedProjects() {
-        List<Project> projectList = projectRepository.findByProjectStatus(ProjectStatus.APPROVED);
-        return projectList.stream().map(project -> {
-            ProjectDTO dto = new ProjectDTO();
-                    dto.setTitle(project.getTitle());
-                    dto.setDescription(project.getDescription());
-                    dto.setTotalAmountAsked(project.getTotalAmountAsked());
-                    dto.setAmountTillNow(project.getAmountTillNow());
-                    dto.setProfitable(project.isProfitable());
-                    dto.setCreatedOn(project.getCreatedOn());
+    public List<ProjectResponseDTO> getProjects(ProjectStatus status) {
+        List<Project> projectList = (status == null)
+                ? projectRepository.findAll()
+                : projectRepository.findByProjectStatus(status);
+
+        if (projectList.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    status == null
+                            ? "No projects found in the system."
+                            : "No projects found with status " + status +"."
+            );
+        }
+
+        return projectList.stream()
+                .map(project -> {
+                    ProjectResponseDTO dto = new ProjectResponseDTO();
+                    dto.convertProjectToDTO(project);
                     return dto;
-                }
-        ).toList();
+                })
+                .toList();
     }
 
     @Override

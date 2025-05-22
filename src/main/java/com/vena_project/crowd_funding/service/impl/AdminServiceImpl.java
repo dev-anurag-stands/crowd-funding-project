@@ -69,22 +69,4 @@ public class AdminServiceImpl implements AdminService {
         return projectService.saveProject(project);
     }
 
-    public List<ProjectDTO> getRejectedProjects() {
-        List<Project> allProjects = projectService.getAllProjects();
-
-        List<ProjectDTO> rejectedProjects = allProjects.stream()
-                .filter(project -> project.getProjectStatus() == ProjectStatus.REJECTED)
-                .map(project -> {
-                    ProjectDTO dto = new ProjectDTO();
-                    dto.convertProjectToDTO(project);
-                    return dto;
-                })
-                .collect(Collectors.toList());
-
-        if (rejectedProjects.isEmpty()) {
-            throw new ResourceNotFoundException("No rejected projects found.");
-        }
-
-        return rejectedProjects;
-    }
 }
