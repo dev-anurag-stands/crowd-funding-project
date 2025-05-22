@@ -1,4 +1,4 @@
-package com.vena_project.crowd_funding.dto;
+package com.vena_project.crowd_funding.dto.ResponseDTO;
 
 import com.vena_project.crowd_funding.model.Project;
 import lombok.Data;

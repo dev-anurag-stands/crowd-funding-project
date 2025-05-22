@@ -1,7 +1,7 @@
 package com.vena_project.crowd_funding.controller;
 
 import com.vena_project.crowd_funding.dto.RequestDTO.ProjectRequestDTO;
-import com.vena_project.crowd_funding.dto.ProjectDTO;
+import com.vena_project.crowd_funding.dto.ResponseDTO.ProjectDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.ProjectResponseDTO;
 import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.enums.ProjectStatus;
@@ -28,11 +28,16 @@ public class ProjectController {
         return new ResponseEntity<>(projectService.createProject(userId, project), HttpStatus.CREATED);
     }
 
-    @GetMapping("/projects/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<ProjectResponseDTO>> getAllProjects(
             @PathVariable Long userId,
             @RequestParam(required = false) ProjectStatus status) {
         return new ResponseEntity<>(projectService.getProjects(userId, status), HttpStatus.OK);
+    }
+
+    @GetMapping("/approved")
+    public ResponseEntity<List<ProjectDTO>> getApprovedProjects() {
+        return new ResponseEntity<>(projectService.getApprovedProjects(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -41,12 +46,12 @@ public class ProjectController {
     }
 
     @GetMapping("/type")
-    public ResponseEntity<List<ProjectDTO>> getNonProfitableProjects(@RequestParam boolean isProfitable) {
+    public ResponseEntity<List<ProjectDTO>> getProjectsByType(@RequestParam boolean isProfitable) {
         return new ResponseEntity<>(projectService.getProjectsByProfitability(isProfitable), HttpStatus.OK);
     }
 
     @PostMapping("/update/{projectId}")
-    public ResponseEntity<Project> updateProject(@PathVariable Long projectId, @Valid @RequestBody ProjectRequestDTO updatedProject) {
+    public ResponseEntity<ProjectResponseDTO> updateProject(@PathVariable Long projectId, @Valid @RequestBody ProjectRequestDTO updatedProject) {
         return ResponseEntity.ok(projectService.updateProject(projectId, updatedProject));
     }
 

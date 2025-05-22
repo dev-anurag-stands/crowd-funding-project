@@ -1,6 +1,5 @@
 package com.vena_project.crowd_funding.controller;
 
-import com.vena_project.crowd_funding.dto.ProjectDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
 import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import com.vena_project.crowd_funding.service.AdminService;
