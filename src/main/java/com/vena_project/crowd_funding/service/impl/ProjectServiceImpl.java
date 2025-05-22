@@ -66,29 +66,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectResponseDTO> getProjects(ProjectStatus status) {
-        List<Project> projectList = (status == null)
-                ? projectRepository.findAll()
-                : projectRepository.findByProjectStatus(status);
-
-        if (projectList.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    status == null
-                            ? "No projects found in the system."
-                            : "No projects found with status " + status +"."
-            );
-        }
-
-        return projectList.stream()
-                .map(project -> {
-                    ProjectResponseDTO dto = new ProjectResponseDTO();
-                    dto.convertProjectToDTO(project);
-                    return dto;
-                })
-                .toList();
-    }
-
-    @Override
     public ProjectResponseDTO getProjectById(Long projectId) {
         Project project = findProjectById(projectId);
         ProjectResponseDTO dto = new ProjectResponseDTO();
@@ -165,5 +142,36 @@ public class ProjectServiceImpl implements ProjectService {
 
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
+    }
+
+    public List<ProjectResponseDTO> getProjects(Long userId, ProjectStatus status) {
+        User user = userService.getUserById(userId);
+
+        List<Project> projectList;
+
+        if (user.getRole().equals("ADMIN")) {
+            projectList = (status == null)
+                    ? projectRepository.findAll()
+                    : projectRepository.findByProjectStatus(status);
+        } else {
+            projectList = (status == null)
+                    ? projectRepository.findProjectsByUserId(userId)
+                    : projectRepository.findProjectsByCreatedByIdAndProjectStatus(userId, status);
+        }
+
+        if (projectList.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    status == null
+                            ? "No projects found."
+                            : "No projects found with status " + status + ".");
+        }
+
+        return projectList.stream()
+                .map(project -> {
+                    ProjectResponseDTO dto = new ProjectResponseDTO();
+                    dto.convertProjectToDTO(project);
+                    return dto;
+                })
+                .toList();
     }
 }

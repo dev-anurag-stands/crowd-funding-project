@@ -4,13 +4,14 @@ import com.vena_project.crowd_funding.dto.RequestDTO.ProjectRequestDTO;
 import com.vena_project.crowd_funding.dto.ProjectDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.ProjectResponseDTO;
 import com.vena_project.crowd_funding.model.Project;
+import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 
 import java.util.List;
 
 public interface ProjectService {
     Project createProject(Long userId, ProjectRequestDTO project);
     List<ProjectResponseDTO> getProjectByUserId(Long createdBy);
-    List<ProjectResponseDTO> getProjects(ProjectStatus status);
+    List<ProjectResponseDTO> getProjects(Long userId, ProjectStatus status);
     ProjectResponseDTO getProjectById(Long id);
     List<ProjectDTO> getProjectsByProfitability(boolean profitability);
     void deleteProject(Long projectId);
