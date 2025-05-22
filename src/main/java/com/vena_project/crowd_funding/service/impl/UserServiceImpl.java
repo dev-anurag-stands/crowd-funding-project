@@ -105,17 +105,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(Long id){
-        Optional<User> user = userRepository.findById(id);
-
-        if(user.isEmpty()){
-            throw new ResourceNotFoundException("Invalid user id.");
-        }
-
-        return user.get();
-    }
-
-    @Override
     public boolean adminExists() {
         return userRepository.existsByRole(UserRole.ADMIN);
     }
