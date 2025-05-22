@@ -35,7 +35,7 @@ public class AdminServiceImpl implements AdminService {
         this.projectService = projectService;
     }
 
-        @Override
+    @Override
     public String upgradeUserToAdmin(Long userId) {
         logger.info("Attempting to upgrade user with id {} to ADMIN", userId);
 
