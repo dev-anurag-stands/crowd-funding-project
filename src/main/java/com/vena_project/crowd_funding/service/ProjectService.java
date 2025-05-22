@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface ProjectService {
     Project createProject(Long userId, ProjectRequestDTO project);
-    List<ProjectResponseDTO> getProjects(Long userId, ProjectStatus status);
+    List<ProjectResponseDTO> getProjectByUserId(Long createdBy);
+    List<ProjectResponseDTO> getProjects(ProjectStatus status);
     ProjectResponseDTO getProjectById(Long id);
     List<ProjectDTO> getProjectsByProfitability(boolean profitability);
     void deleteProject(Long projectId);
