@@ -1,6 +1,7 @@
 package com.vena_project.crowd_funding.controller;
 
-import com.vena_project.crowd_funding.dto.UpdateUserInfoDTO;
+import com.vena_project.crowd_funding.dto.RequestDTO.UpdatePasswordRequestDTO;
+import com.vena_project.crowd_funding.dto.RequestDTO.UpdateUserInfoRequestDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
 import com.vena_project.crowd_funding.service.UserService;
 import jakarta.validation.Valid;
@@ -31,10 +32,15 @@ public class UserController {
     }
 
     @PatchMapping("/update-info/{id}")
-    public ResponseEntity<String> updateUserInfo(
+    public ResponseEntity<UserResponseDTO> updateUserInfo(
             @PathVariable Long id,
-            @Valid @RequestBody UpdateUserInfoDTO updatedUserInfo){
-        userService.updateUserInformation(id, updatedUserInfo);
-        return new ResponseEntity<>("user updated", HttpStatus.OK);
+            @Valid @RequestBody UpdateUserInfoRequestDTO updatedUserInfo){
+        return new ResponseEntity<>(userService.updateUserInformation(id, updatedUserInfo), HttpStatus.OK);
+    }
+
+    @PatchMapping("/update-password/{userId}")
+    public ResponseEntity<String> updateUserPassword(@PathVariable Long userId, @Valid @RequestBody UpdatePasswordRequestDTO updatePasswordRequest){
+        userService.updatePassword(userId, updatePasswordRequest);
+        return new ResponseEntity<>("password updated", HttpStatus.OK);
     }
 }

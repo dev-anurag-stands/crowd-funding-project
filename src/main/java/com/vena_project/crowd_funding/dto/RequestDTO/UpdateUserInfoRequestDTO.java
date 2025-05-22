@@ -1,12 +1,11 @@
-package com.vena_project.crowd_funding.dto;
+package com.vena_project.crowd_funding.dto.RequestDTO;
 
-import com.vena_project.crowd_funding.model.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class UpdateUserInfoDTO {
+public class UpdateUserInfoRequestDTO {
 
     @Email(message = "provide a valid email address")
     @NotBlank(message = "email can not be null or empty")

@@ -9,9 +9,6 @@ import lombok.Data;
 
 @Data
 public class UserRequestDTO {
-    @NotNull(message = "id cannot be null")
-    private Long id;
-
     @Email(message = "provide a valid email address")
     private String email;
 
@@ -21,14 +18,12 @@ public class UserRequestDTO {
     @NotBlank(message = "name cannot be empty string or null")
     private String name;
 
-    @NotNull(message = "role cannot be null")
     private UserRole role;
 
     public void convertToDTO(User user){
-        this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
+        this.password = user.getPassword();
         this.role = user.getRole();
-
     }
 }
