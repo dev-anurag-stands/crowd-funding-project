@@ -11,7 +11,7 @@ public interface ContributionService {
 
     List<ContributionResponseDTO> getUserContributions(Long userId);
 
-    List<ContributionResponseDTO> getContributionsOnProject(Long projectId, Long requesterId);
+    List<ContributionResponseDTO> getContributionsOnUserProject(Long projectId, Long requesterId);
 }
 
 

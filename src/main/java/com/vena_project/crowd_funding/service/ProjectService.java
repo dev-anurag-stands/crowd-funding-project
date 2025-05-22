@@ -20,6 +20,5 @@ public interface ProjectService {
     Project updateProject(Long projectId, ProjectRequestDTO project);
     void incrementAmountTillNow(Long projectId, Double contributedAmount);
     List<Project> getAllProjects();
-    Project getProjectEntityById(Long projectId);
 
 }

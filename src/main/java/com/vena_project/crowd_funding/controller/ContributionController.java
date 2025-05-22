@@ -36,12 +36,12 @@ public class ContributionController {
         return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
 
-    // GET /contribution/{projectId}/{userId}
+    // GET /contribution/{userId}/{projectId}
     @GetMapping("/{userId}/{projectId}")
     public ResponseEntity<List<ContributionResponseDTO>> getContributionsOnUserProject(
             @PathVariable Long projectId,
             @PathVariable Long userId) {
-        List<ContributionResponseDTO> responseList = contributionService.getContributionsOnProject(projectId, userId);
+        List<ContributionResponseDTO> responseList = contributionService.getContributionsOnUserProject(projectId, userId);
         return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
 

@@ -1,12 +1,12 @@
 package com.vena_project.crowd_funding.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import java.time.LocalDate;
 
 @Entity
 @Data
+
 public class Contribution {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
