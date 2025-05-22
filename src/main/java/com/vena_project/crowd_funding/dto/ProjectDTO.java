@@ -1,5 +1,6 @@
 package com.vena_project.crowd_funding.dto;
 
+import com.vena_project.crowd_funding.model.Project;
 import lombok.Data;
 
 import java.time.LocalDate;
