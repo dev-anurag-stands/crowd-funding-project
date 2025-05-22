@@ -38,7 +38,7 @@ public class Project {
 
     private LocalDate createdOn;
 
-    @OneToMany(mappedBy = "projectId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Contribution> contributions;
 }
