@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class ContributionServiceImpl implements ContributionService {
 
     private static final Logger logger = LoggerFactory.getLogger(ContributionServiceImpl.class);
@@ -40,6 +39,7 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     @Override
+    @Transactional
     public ContributionResponseDTO makeContribution(Long projectId, ContributionRequestDTO dto) {
         logger.info("Initiating contribution process for Project ID: {} by User ID: {}", projectId, dto.getUserId());
 
