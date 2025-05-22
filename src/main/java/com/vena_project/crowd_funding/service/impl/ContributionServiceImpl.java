@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class ContributionServiceImpl implements ContributionService {
 
     private static final Logger logger = LoggerFactory.getLogger(ContributionServiceImpl.class);
@@ -40,6 +39,7 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     @Override
+    @Transactional
     public ContributionResponseDTO makeContribution(Long projectId, ContributionRequestDTO dto) {
         logger.info("Initiating contribution process for Project ID: {} by User ID: {}", projectId, dto.getUserId());
 
@@ -50,12 +50,16 @@ public class ContributionServiceImpl implements ContributionService {
             logger.warn("Admin tried to contribute. Access denied.");
             throw new AccessDeniedForAdminException("Admins are not allowed to make contributions.");
         }
+        if (projectEntity.getCreatedBy().getId().equals(dto.getUserId())) {
+            logger.warn("User ID {} attempted to contribute to their own project ID {}. Access denied.", dto.getUserId(), projectId);
+            throw new IllegalArgumentException("You cannot contribute to a project you created.");
+        }
         if (projectEntity.getProjectStatus() != ProjectStatus.APPROVED) {
             logger.warn("Contribution rejected - Project ID {} is not approved.", projectId);
             throw new IllegalArgumentException("User can only contribute to an approved project.");
         }
-
-        if (projectEntity.getAmountTillNow() >= projectEntity.getTotalAmountAsked()) {
+        double newTotal = projectEntity.getAmountTillNow() + dto.getAmountGiven();
+        if (newTotal > projectEntity.getTotalAmountAsked()) {
             logger.warn("Contribution rejected - Project ID {} has reached its funding goal.", projectId);
             throw new IllegalArgumentException("Asked amount is already reached. Cannot accept more contributions.");
         }
@@ -105,16 +109,11 @@ public class ContributionServiceImpl implements ContributionService {
         User requester = userService.getUserById(requesterId);
         Project projectEntity = projectService.findProjectById(projectId);
 
-        if (requester.getRole() != UserRole.ADMIN) {
-            logger.warn("Unauthorized access attempt by non-admin user ID {}", requesterId);
-            throw new AccessDeniedForAdminException("Admin users do not own any projects and cannot view contributions.");
-        }
-
-        if (!projectEntity.getCreatedBy().getId().equals(requesterId)) {
-            logger.warn("Admin ID {} tried to access contributions of a project not created by them.", requesterId);
+        if (requester.getRole() != UserRole.ADMIN &&
+                !projectEntity.getCreatedBy().getId().equals(requesterId)) {
+            logger.warn("Unauthorized access by User ID {} for Project ID {}", requesterId, projectId);
             throw new IllegalArgumentException("User not authorized to view contributions on this project.");
         }
-
         List<Contribution> contributions = contributionRepository.findByProjectId(projectId);
         ProjectResponseDTO projectResponseDTO = projectService.getProjectById(projectId);
 
@@ -126,5 +125,9 @@ public class ContributionServiceImpl implements ContributionService {
             dto.setFromContribution(c, contributor, projectResponseDTO);
             return dto;
         }).collect(Collectors.toList());
+    }
+    @Override
+    public List<Contribution> getAllContributions() {
+        return contributionRepository.findAll();
     }
 }
