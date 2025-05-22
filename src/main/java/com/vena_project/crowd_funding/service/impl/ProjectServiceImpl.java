@@ -2,7 +2,7 @@ package com.vena_project.crowd_funding.service.impl;
 
 import com.vena_project.crowd_funding.dto.RequestDTO.ProjectRequestDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.ProjectResponseDTO;
-import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
+import com.vena_project.crowd_funding.dto.ProjectDTO;
 import com.vena_project.crowd_funding.exception.CreateAccessException;
 import com.vena_project.crowd_funding.exception.ResourceNotFoundException;
 import com.vena_project.crowd_funding.model.Project;
@@ -63,22 +63,6 @@ public class ProjectServiceImpl implements ProjectService {
             dto.setProfitable(project.isProfitable());
             return dto;
         }).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProjectDTO> getApprovedProjects() {
-        List<Project> projectList = projectRepository.findByProjectStatus(ProjectStatus.APPROVED);
-        return projectList.stream().map(project -> {
-            ProjectDTO dto = new ProjectDTO();
-                    dto.setTitle(project.getTitle());
-                    dto.setDescription(project.getDescription());
-                    dto.setTotalAmountAsked(project.getTotalAmountAsked());
-                    dto.setAmountTillNow(project.getAmountTillNow());
-                    dto.setProfitable(project.isProfitable());
-                    dto.setCreatedOn(project.getCreatedOn());
-                    return dto;
-                }
-        ).toList();
     }
 
     @Override
@@ -158,5 +142,36 @@ public class ProjectServiceImpl implements ProjectService {
 
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
+    }
+
+    public List<ProjectResponseDTO> getProjects(Long userId, ProjectStatus status) {
+        User user = userService.getUserById(userId);
+
+        List<Project> projectList;
+
+        if (user.getRole().equals("ADMIN")) {
+            projectList = (status == null)
+                    ? projectRepository.findAll()
+                    : projectRepository.findByProjectStatus(status);
+        } else {
+            projectList = (status == null)
+                    ? projectRepository.findProjectsByUserId(userId)
+                    : projectRepository.findProjectsByCreatedByIdAndProjectStatus(userId, status);
+        }
+
+        if (projectList.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    status == null
+                            ? "No projects found."
+                            : "No projects found with status " + status + ".");
+        }
+
+        return projectList.stream()
+                .map(project -> {
+                    ProjectResponseDTO dto = new ProjectResponseDTO();
+                    dto.convertProjectToDTO(project);
+                    return dto;
+                })
+                .toList();
     }
 }

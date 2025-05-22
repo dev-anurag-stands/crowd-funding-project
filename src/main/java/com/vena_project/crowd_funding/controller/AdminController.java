@@ -42,11 +42,4 @@ public class AdminController {
         String message = "Project with ID " + projectId + " has been " + status.toString().toLowerCase() + ".";
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
-
-    @GetMapping("/projects/rejected")
-    public ResponseEntity<List<ProjectDTO>> getRejectedProjects() {
-        List<ProjectDTO> projects = adminService.getRejectedProjects();
-        return new ResponseEntity<>(projects, HttpStatus.OK);
-    }
-
 }

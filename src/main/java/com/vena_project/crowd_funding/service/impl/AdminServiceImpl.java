@@ -1,6 +1,5 @@
 package com.vena_project.crowd_funding.service.impl;
 
-import com.vena_project.crowd_funding.dto.ProjectDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
 import com.vena_project.crowd_funding.exception.ResourceNotFoundException;
 import com.vena_project.crowd_funding.exception.UserAlreadyAdminException;
@@ -11,6 +10,8 @@ import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.service.AdminService;
 import com.vena_project.crowd_funding.service.ProjectService;
 import com.vena_project.crowd_funding.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class AdminServiceImpl implements AdminService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AdminServiceImpl.class);
 
     private final UserService userService;
     private final ProjectService projectService;
@@ -27,64 +30,66 @@ public class AdminServiceImpl implements AdminService {
         this.projectService = projectService;
     }
 
+    @Override
     public String upgradeUserToAdmin(Long userId) {
+        logger.info("Attempting to upgrade user with id {} to ADMIN", userId);
+
         User user = userService.getUserById(userId);
 
         if (user.getRole() == UserRole.ADMIN) {
+            logger.warn("User with id {} is already ADMIN", userId);
             throw new UserAlreadyAdminException("User with id " + userId + " is already an ADMIN.");
         }
 
         user.setRole(UserRole.ADMIN);
         userService.saveUser(user);
+        logger.info("User with id {} upgraded to ADMIN successfully", userId);
         return "User with id " + userId + " upgraded to ADMIN successfully.";
     }
 
     @Override
     public List<UserResponseDTO> getAllUsers() {
-        return userService.usersList();
+        logger.info("Fetching all users");
+        List<UserResponseDTO> users = userService.usersList();
+        logger.info("Total users fetched: {}", users.size());
+        return users;
     }
 
     @Override
     public List<UserResponseDTO> getUsersByRole(String role) {
+        logger.info("Fetching users with role '{}'", role);
 
-        return userService.usersList().stream()
-                .filter(user -> {
-                    return user.getRole().toString().equalsIgnoreCase(role);
-                })
+        List<UserResponseDTO> usersByRole = userService.usersList().stream()
+                .filter(user -> user.getRole().toString().equalsIgnoreCase(role))
                 .collect(Collectors.toList());
+
+        logger.info("Found {} users with role '{}'", usersByRole.size(), role);
+        return usersByRole;
     }
 
+    @Override
     public Project updateProjectStatus(Long projectId, ProjectStatus status) {
+        logger.info("Updating project id {} status to {}", projectId, status);
 
         Project project = projectService.findProjectById(projectId);
 
         if (project.getProjectStatus() != ProjectStatus.PENDING) {
-            throw new IllegalStateException("Project status has already been set to "
-                    + project.getProjectStatus().name().toLowerCase() + " and cannot be changed again.");
+            String errMsg = "Project status already set to "
+                    + project.getProjectStatus().name().toLowerCase() + " and cannot be changed.";
+            logger.warn(errMsg);
+            throw new IllegalStateException(errMsg);
         }
+
         if (project.getProjectStatus() == status) {
-            throw new IllegalStateException("Project is already " + status.toString().toLowerCase() + ".");
+            String errMsg = "Project is already " + status.toString().toLowerCase() + ".";
+            logger.warn(errMsg);
+            throw new IllegalStateException(errMsg);
         }
+
         project.setProjectStatus(status);
-        return projectService.saveProject(project);
-    }
+        Project savedProject = projectService.saveProject(project);
 
-    public List<ProjectDTO> getRejectedProjects() {
-        List<Project> allProjects = projectService.getAllProjects();
-
-        List<ProjectDTO> rejectedProjects = allProjects.stream()
-                .filter(project -> project.getProjectStatus() == ProjectStatus.REJECTED)
-                .map(project -> {
-                    ProjectDTO dto = new ProjectDTO();
-                    dto.convertProjectToDTO(project);
-                    return dto;
-                })
-                .collect(Collectors.toList());
-
-        if (rejectedProjects.isEmpty()) {
-            throw new ResourceNotFoundException("No rejected projects found.");
-        }
-
-        return rejectedProjects;
+        logger.info("Project id {} status updated to {}", projectId, status);
+        return savedProject;
     }
 }

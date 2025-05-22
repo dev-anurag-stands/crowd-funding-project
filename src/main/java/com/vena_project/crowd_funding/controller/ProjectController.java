@@ -4,6 +4,7 @@ import com.vena_project.crowd_funding.dto.RequestDTO.ProjectRequestDTO;
 import com.vena_project.crowd_funding.dto.ProjectDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.ProjectResponseDTO;
 import com.vena_project.crowd_funding.model.Project;
+import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import com.vena_project.crowd_funding.service.ProjectService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -27,14 +28,11 @@ public class ProjectController {
         return new ResponseEntity<>(projectService.createProject(userId, project), HttpStatus.CREATED);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ProjectResponseDTO>> getProjectsByUser(@PathVariable Long userId) {
-        return new ResponseEntity<>(projectService.getProjectByUserId(userId), HttpStatus.OK);
-    }
-
-    @GetMapping("/approved")
-    public ResponseEntity<List<ProjectDTO>> getApprovedProjects() {
-        return new ResponseEntity<>(projectService.getApprovedProjects(), HttpStatus.OK);
+    @GetMapping("/projects/{userId}")
+    public ResponseEntity<List<ProjectResponseDTO>> getAllProjects(
+            @PathVariable Long userId,
+            @RequestParam(required = false) ProjectStatus status) {
+        return new ResponseEntity<>(projectService.getProjects(userId, status), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
