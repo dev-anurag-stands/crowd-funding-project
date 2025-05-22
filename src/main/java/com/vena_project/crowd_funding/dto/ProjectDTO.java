@@ -14,7 +14,7 @@ public class ProjectDTO {
     private String description;
 
     private double totalAmountAsked;
-
+  
     private double amountTillNow;
 
     private boolean profitable;
