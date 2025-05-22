@@ -12,6 +12,7 @@ import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.repository.ProjectRepository;
 import com.vena_project.crowd_funding.service.ProjectService;
 import com.vena_project.crowd_funding.service.UserService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,7 +24,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final UserService userService;
 
-    ProjectServiceImpl( ProjectRepository projectRepository, UserService userService) {
+    ProjectServiceImpl( ProjectRepository projectRepository,  @Lazy UserService userService) {
         this.projectRepository = projectRepository;
         this.userService = userService;
     }
@@ -114,6 +115,7 @@ public class ProjectServiceImpl implements ProjectService {
         project.setProfitable(dto.isProfitable());
         project.setCreatedOn(LocalDate.now());
 
+
         Project savedProject = saveProject(project);
         ProjectResponseDTO projectResponseDTO = new ProjectResponseDTO();
         projectResponseDTO.convertProjectToDTO(savedProject);
@@ -121,7 +123,6 @@ public class ProjectServiceImpl implements ProjectService {
         return projectResponseDTO;
     }
 
-    @Override
     public void incrementAmountTillNow(Long projectId, Double amount) {
         Project project = findProjectById(projectId);
         double newAmount = project.getAmountTillNow() + amount;
@@ -152,12 +153,12 @@ public class ProjectServiceImpl implements ProjectService {
 
     public List<ProjectResponseDTO> getProjects(Long userId, ProjectStatus status) {
         User user = userService.getUserById(userId);
-
+        System.out.println("User role: " + user.getRole());
         List<Project> projectList;
 
-        if (user.getRole().equals(UserRole.ADMIN)) {
+        if (user.getRole() == UserRole.ADMIN){
             projectList = (status == null)
-                    ? getAllProjects()
+                    ? projectRepository.findAll()
                     : projectRepository.findByProjectStatus(status);
         } else {
             projectList = (status == null)

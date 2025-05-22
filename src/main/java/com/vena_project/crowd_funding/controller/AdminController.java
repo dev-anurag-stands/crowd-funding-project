@@ -1,5 +1,6 @@
 package com.vena_project.crowd_funding.controller;
 
+import com.vena_project.crowd_funding.dto.ResponseDTO.ContributionResponseDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
 import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import com.vena_project.crowd_funding.service.AdminService;
@@ -40,5 +41,11 @@ public class AdminController {
 
         String message = "Project with ID " + projectId + " has been " + status.toString().toLowerCase() + ".";
         return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    @GetMapping("/contributions")
+    public ResponseEntity<List<ContributionResponseDTO>> getAllContributions() {
+        List<ContributionResponseDTO> contributions = adminService.getAllContributions();
+        return new ResponseEntity<>(contributions, HttpStatus.OK);
     }
 }
