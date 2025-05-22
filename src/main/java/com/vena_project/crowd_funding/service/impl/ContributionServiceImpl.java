@@ -126,4 +126,8 @@ public class ContributionServiceImpl implements ContributionService {
             return dto;
         }).collect(Collectors.toList());
     }
+    @Override
+    public List<Contribution> getAllContributions() {
+        return contributionRepository.findAll();
+    }
 }
