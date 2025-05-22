@@ -29,7 +29,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project createProject(Long userId, ProjectRequestDTO project) {
-        User user = userService.userInfo(userId);
+        User user = userService.getUserById(userId);
         Project newProject = new Project();
 
         newProject.setTitle(project.getTitle());
@@ -59,10 +59,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ApprovedProjectDTO> getApprovedProjects() {
+    public List<ProjectDTO> getApprovedProjects() {
         List<Project> projectList = projectRepository.findByProjectStatus(ProjectStatus.APPROVED);
         return projectList.stream().map(project -> {
-                    ApprovedProjectDTO dto = new ApprovedProjectDTO();
+            ProjectDTO dto = new ProjectDTO();
                     dto.setTitle(project.getTitle());
                     dto.setDescription(project.getDescription());
                     dto.setTotalAmountAsked(project.getTotalAmountAsked());
@@ -75,19 +75,19 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectDTO getProjectById(Long projectId) {
+    public ProjectResponseDTO getProjectById(Long projectId) {
         Project project = findProjectById(projectId);
-        ProjectDTO dto = new ProjectDTO();
+        ProjectResponseDTO dto = new ProjectResponseDTO();
         dto.convertProjectToDTO(project);
         return dto;
     }
 
     @Override
-    public List<ProjectTypeDTO> getProjectsByProfitability(boolean profitable) {
+    public List<ProjectDTO> getProjectsByProfitability(boolean profitable) {
         List<Project> projectList = projectRepository.findByProfitable(profitable);
 
         return projectList.stream().map(project -> {
-            ProjectTypeDTO dto = new ProjectTypeDTO();
+            ProjectDTO dto = new ProjectDTO();
             dto.setTitle(project.getTitle());
             dto.setDescription(project.getDescription());
             dto.setTotalAmountAsked(project.getTotalAmountAsked());
@@ -147,5 +147,9 @@ public class ProjectServiceImpl implements ProjectService {
         if (updatedRows == 0) {
             throw new RuntimeException("Failed to update amount: Project not found with ID: " + projectId);
         }
+    }
+
+    public List<Project> getAllProjects() {
+        return projectRepository.findAll();
     }
 }

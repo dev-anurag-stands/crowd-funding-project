@@ -1,15 +1,13 @@
-package com.vena_project.crowd_funding.dto;
+package com.vena_project.crowd_funding.dto.RequestDTO;
 
-import com.vena_project.crowd_funding.model.enums.ProjectStatus;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class ProjectResponseDTO {
+public class ProjectRequestDTO {
+
     @NotBlank(message = "Title cannot be empty")
     private String title;
 
@@ -18,12 +16,6 @@ public class ProjectResponseDTO {
 
     @NotNull(message = "Total amount asked cannot be null")
     private double totalAmountAsked;
-
-    @NotNull(message = "Amount collected so far cannot be null")
-    private double amountTillNow;
-
-    @Enumerated(EnumType.STRING)
-    private ProjectStatus projectStatus;
 
     @Column(nullable = false)
     private boolean profitable;
