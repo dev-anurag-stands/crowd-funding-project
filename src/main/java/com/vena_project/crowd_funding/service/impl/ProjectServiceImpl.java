@@ -148,4 +148,8 @@ public class ProjectServiceImpl implements ProjectService {
             throw new RuntimeException("Failed to update amount: Project not found with ID: " + projectId);
         }
     }
+
+    public List<Project> getAllProjects() {
+        return projectRepository.findAll();
+    }
 }
