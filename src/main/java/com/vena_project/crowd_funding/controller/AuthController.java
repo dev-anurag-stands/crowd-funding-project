@@ -2,6 +2,7 @@ package com.vena_project.crowd_funding.controller;
 
 import com.vena_project.crowd_funding.dto.RequestDTO.LoginRequestDTO;
 import com.vena_project.crowd_funding.dto.RequestDTO.UserRequestDTO;
+import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
 import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.service.UserService;
 import jakarta.validation.Valid;
@@ -23,13 +24,11 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody UserRequestDTO user){
+    public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody UserRequestDTO user){
         if(user.getRole() == UserRole.ADMIN){
             throw new IllegalArgumentException("Admin cannot be registered, submit a request first.");
         }
-
-        userService.register(user);
-        return new ResponseEntity<>("user registered", HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.register(user), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")

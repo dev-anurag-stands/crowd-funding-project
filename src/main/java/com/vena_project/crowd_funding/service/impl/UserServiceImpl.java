@@ -40,24 +40,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserInformation(Long id, UpdateUserInfoRequestDTO updatedUserInfo) {
+    public UserResponseDTO updateUserInformation(Long id, UpdateUserInfoRequestDTO updatedUserInfo) {
         User user = userRepository.findById(id).orElse(null);
         if(user == null){
             throw new ResourceNotFoundException("invalid user id");
         }
 
-        logger.info("name changed from : {} to {}", user.getEmail(), updatedUserInfo.getEmail());
-        user.setEmail(updatedUserInfo.getEmail());
+        if(!user.getEmail().equals(updatedUserInfo.getEmail())){
+            logger.info("name changed from : {} to {}", user.getEmail(), updatedUserInfo.getEmail());
+            user.setEmail(updatedUserInfo.getEmail());
+        }
 
-        logger.info("name changed from : {} to {}", user.getName(), updatedUserInfo.getName());
-        user.setName(updatedUserInfo.getName());
-
+        if(!user.getName().equals(updatedUserInfo.getName())){
+            logger.info("name changed from : {} to {}", user.getName(), updatedUserInfo.getName());
+            user.setName(updatedUserInfo.getName());
+        }
         userRepository.save(user);
         logger.info("User updated: {}, email: {}", updatedUserInfo.getName(), updatedUserInfo.getEmail());
+
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
+        userResponseDTO.convertToDTO(user);
+        return userResponseDTO;
     }
 
     @Override
-    public void register(UserRequestDTO userDTO) {
+    public UserResponseDTO register(UserRequestDTO userDTO) {
         if(userDTO.getRole() == UserRole.ADMIN){
             throw new IllegalArgumentException("Admin cannot be registered, submit a request first.");
         }
@@ -69,7 +76,11 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.updateFromRequestDTO(userDTO);
         userRepository.save(user);
+
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
+        userResponseDTO.convertToDTO(user);
         logger.info("User registered: {}", user.getEmail());
+        return userResponseDTO;
     }
 
     @Override

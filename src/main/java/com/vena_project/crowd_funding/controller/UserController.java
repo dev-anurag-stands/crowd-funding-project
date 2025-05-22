@@ -32,11 +32,10 @@ public class UserController {
     }
 
     @PatchMapping("/update-info/{id}")
-    public ResponseEntity<String> updateUserInfo(
+    public ResponseEntity<UserResponseDTO> updateUserInfo(
             @PathVariable Long id,
             @Valid @RequestBody UpdateUserInfoRequestDTO updatedUserInfo){
-        userService.updateUserInformation(id, updatedUserInfo);
-        return new ResponseEntity<>("user updated", HttpStatus.OK);
+        return new ResponseEntity<>(userService.updateUserInformation(id, updatedUserInfo), HttpStatus.OK);
     }
 
     @PatchMapping("/update-password/{userId}")

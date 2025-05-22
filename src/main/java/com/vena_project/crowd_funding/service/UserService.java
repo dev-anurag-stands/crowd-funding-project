@@ -9,10 +9,10 @@ import com.vena_project.crowd_funding.model.User;
 import java.util.List;
 
 public interface UserService {
-    void register(UserRequestDTO user);
+    UserResponseDTO register(UserRequestDTO user);
     void login(LoginRequestDTO loginRequest);
     void updatePassword(Long userId, UpdatePasswordRequestDTO updatePasswordRequest);
-    void updateUserInformation(Long id, UpdateUserInfoRequestDTO updatedUserInfo);
+    UserResponseDTO updateUserInformation(Long id, UpdateUserInfoRequestDTO updatedUserInfo);
     boolean adminExists();
     void registerAdmin(User admin);
     UserResponseDTO userInfo(Long id);
