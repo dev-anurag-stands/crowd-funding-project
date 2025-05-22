@@ -41,10 +41,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO updateUserInformation(Long id, UpdateUserInfoRequestDTO updatedUserInfo) {
-        User user = userRepository.findById(id).orElse(null);
-        if(user == null){
-            throw new ResourceNotFoundException("invalid user id");
-        }
+        User user = getUserById(id);
 
         if(!user.getEmail().equals(updatedUserInfo.getEmail())){
             logger.info("name changed from : {} to {}", user.getEmail(), updatedUserInfo.getEmail());
@@ -117,8 +114,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updatePassword(Long userId, UpdatePasswordRequestDTO updatePasswordRequest) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " not found."));
+        User user = getUserById(userId);
 
         if(!user.getPassword().equals(updatePasswordRequest.getOldPassword())){
             throw new IllegalArgumentException("invalid old password provided");

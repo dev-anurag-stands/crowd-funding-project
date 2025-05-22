@@ -25,9 +25,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody UserRequestDTO user){
-        if(user.getRole() == UserRole.ADMIN){
-            throw new IllegalArgumentException("Admin cannot be registered, submit a request first.");
-        }
         return new ResponseEntity<>(userService.register(user), HttpStatus.CREATED);
     }
 
