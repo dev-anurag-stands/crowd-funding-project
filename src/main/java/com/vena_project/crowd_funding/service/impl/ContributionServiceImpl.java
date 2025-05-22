@@ -70,7 +70,7 @@ public class ContributionServiceImpl implements ContributionService {
         }
 
         // Fetch contributor user details
-        User contributor = userService.userInfo(userId);
+        User contributor = userService.getUserById(userId);
 
         // Prevent Admins from contributing
         if (contributor.getRole().equals(UserRole.ADMIN)) {

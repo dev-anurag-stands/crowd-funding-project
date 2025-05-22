@@ -21,4 +21,14 @@ public class ProjectDTO {
     private boolean profitable;
 
     private LocalDate createdOn;
+
+    public void convertProjectToDTO(Project project) {
+        this.projectId = project.getProjectId();
+        this.title = project.getTitle();
+        this.description = project.getDescription();
+        this.totalAmountAsked = project.getTotalAmountAsked();
+        this.amountTillNow = project.getAmountTillNow();
+        this.profitable = project.isProfitable();
+        this.createdOn = project.getCreatedOn();
+    }
 }
