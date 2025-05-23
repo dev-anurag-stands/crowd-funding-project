@@ -18,6 +18,5 @@ public interface ProjectService {
     Project saveProject(Project project);
     ProjectResponseDTO updateProject(Long projectId, ProjectRequestDTO project);
     void incrementAmountTillNow(Long projectId, Double contributedAmount);
-    List<Project> getAllProjects();
     List<ProjectDTO> getApprovedProjects();
 }

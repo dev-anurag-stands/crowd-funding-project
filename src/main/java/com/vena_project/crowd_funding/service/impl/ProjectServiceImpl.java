@@ -131,10 +131,6 @@ public class ProjectServiceImpl implements ProjectService {
         saveProject(project);
     }
 
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
-    }
-
     @Override
     public List<ProjectDTO> getApprovedProjects() {
         List<Project> projectList = projectRepository.findByProjectStatus(ProjectStatus.APPROVED);
@@ -158,7 +154,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         if (user.getRole() == UserRole.ADMIN){
             projectList = (status == null)
-                    ? getAllProjects()
+                    ? projectRepository.findAll()
                     : projectRepository.findByProjectStatus(status);
         } else {
             projectList = (status == null)
