@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ProjectRepository extends JpaRepository<Project, Long> {
 
-    @Query(value = "SELECT * FROM project WHERE created_by_id = :createdBy", nativeQuery = true)
+    @Query("SELECT p FROM Project p WHERE p.createdBy.id = :createdBy")
     List<Project> findProjectsByUserId(@Param("createdBy") Long createdBy);
 
     @Query("SELECT p FROM Project p WHERE p.createdBy.id = :userId AND p.projectStatus = :status")
