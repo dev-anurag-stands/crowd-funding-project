@@ -61,11 +61,11 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<UserResponseDTO> getUsersByRole(String role) {
+    public List<UserResponseDTO> getUsersByRole(UserRole role) {
         logger.info("Fetching users with role '{}'", role);
 
         List<UserResponseDTO> usersByRole = userService.usersList().stream()
-                .filter(user -> user.getRole().toString().equalsIgnoreCase(role))
+                .filter(user -> user.getRole() == role)
                 .collect(Collectors.toList());
 
         logger.info("Found {} users with role '{}'", usersByRole.size(), role);

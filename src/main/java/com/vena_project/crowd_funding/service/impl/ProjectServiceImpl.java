@@ -158,7 +158,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         if (user.getRole() == UserRole.ADMIN){
             projectList = (status == null)
-                    ? projectRepository.findAll()
+                    ? getAllProjects()
                     : projectRepository.findByProjectStatus(status);
         } else {
             projectList = (status == null)

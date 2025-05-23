@@ -3,6 +3,7 @@ package com.vena_project.crowd_funding.controller;
 import com.vena_project.crowd_funding.dto.ResponseDTO.ContributionResponseDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
 import com.vena_project.crowd_funding.model.enums.ProjectStatus;
+import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.service.AdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserResponseDTO>> getUsers(@RequestParam (required = false) String role){
+    public ResponseEntity<List<UserResponseDTO>> getUsers(@RequestParam (required = false) UserRole role){
         if(role==null ){
             return new ResponseEntity<>(adminService.getAllUsers(), HttpStatus.OK);
         }
@@ -39,13 +40,11 @@ public class AdminController {
 
         adminService.updateProjectStatus(projectId, status);
 
-        String message = "Project with ID " + projectId + " has been " + status.toString().toLowerCase() + ".";
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        return new ResponseEntity<>("Project with ID " + projectId + " has been " + status, HttpStatus.OK);
     }
 
     @GetMapping("/contributions")
     public ResponseEntity<List<ContributionResponseDTO>> getAllContributions() {
-        List<ContributionResponseDTO> contributions = adminService.getAllContributions();
-        return new ResponseEntity<>(contributions, HttpStatus.OK);
+        return new ResponseEntity<>(adminService.getAllContributions(), HttpStatus.OK);
     }
 }
