@@ -1,6 +1,5 @@
 package com.vena_project.crowd_funding.dto.ResponseDTO;
 
-import com.vena_project.crowd_funding.model.Project;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -22,13 +21,4 @@ public class ProjectDTO {
 
     private LocalDate createdOn;
 
-    public void convertProjectToDTO(Project project) {
-        this.projectId = project.getProjectId();
-        this.title = project.getTitle();
-        this.description = project.getDescription();
-        this.totalAmountAsked = project.getTotalAmountAsked();
-        this.amountTillNow = project.getAmountTillNow();
-        this.profitable = project.isProfitable();
-        this.createdOn = project.getCreatedOn();
-    }
 }

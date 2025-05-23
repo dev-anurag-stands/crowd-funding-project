@@ -26,10 +26,6 @@ public class UserController {
         return new ResponseEntity<>(userService.userInfo(id), HttpStatus.OK);
     }
 
-    @GetMapping("/users")
-    public ResponseEntity<List<UserResponseDTO>> listUsers(){
-        return new ResponseEntity<>(userService.usersList(), HttpStatus.OK);
-    }
 
     @PatchMapping("/update-info/{id}")
     public ResponseEntity<UserResponseDTO> updateUserInfo(

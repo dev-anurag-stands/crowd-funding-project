@@ -3,8 +3,6 @@ package com.vena_project.crowd_funding.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -18,7 +16,7 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long projectId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "created_by_id", nullable = false)
     @JsonIgnore
     private User createdBy;
