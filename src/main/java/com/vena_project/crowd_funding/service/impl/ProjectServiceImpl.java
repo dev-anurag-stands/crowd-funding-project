@@ -29,7 +29,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project createProject(Long userId, ProjectRequestDTO project) {
+    public ProjectResponseDTO createProject(Long userId, ProjectRequestDTO project) {
         User user = userService.getUserById(userId);
 
         if(user.getRole() == UserRole.ADMIN){
@@ -44,9 +44,12 @@ public class ProjectServiceImpl implements ProjectService {
         newProject.setCreatedBy(user);
         newProject.setProfitable(project.isProfitable());
         newProject.setCreatedOn(LocalDate.now());
-        newProject.setAmountTillNow(0.0);
+        Project savedProject = projectRepository.save(newProject);
 
-        return saveProject(newProject);
+        ProjectResponseDTO projectResponseDTO = new ProjectResponseDTO();
+        projectResponseDTO.setProjectId(savedProject.getProjectId());
+        projectResponseDTO.convertProjectToDTO(savedProject);
+        return projectResponseDTO;
     }
 
     @Override
@@ -63,12 +66,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         return projectList.stream().map(project -> {
             ProjectDTO dto = new ProjectDTO();
-            dto.setTitle(project.getTitle());
-            dto.setProjectId(project.getProjectId());
-            dto.setDescription(project.getDescription());
-            dto.setTotalAmountAsked(project.getTotalAmountAsked());
-            dto.setAmountTillNow(project.getAmountTillNow());
-            dto.setCreatedOn(project.getCreatedOn());
+            dto.convertProjectToDTO(project);
             return dto;
         }).collect(Collectors.toList());
     }
@@ -113,8 +111,6 @@ public class ProjectServiceImpl implements ProjectService {
         project.setDescription(dto.getDescription());
         project.setTotalAmountAsked(dto.getTotalAmountAsked());
         project.setProfitable(dto.isProfitable());
-        project.setCreatedOn(LocalDate.now());
-
 
         Project savedProject = saveProject(project);
         ProjectResponseDTO projectResponseDTO = new ProjectResponseDTO();
@@ -136,13 +132,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<Project> projectList = projectRepository.findByProjectStatus(ProjectStatus.APPROVED);
         return projectList.stream().map(project -> {
                     ProjectDTO dto = new ProjectDTO();
-                    dto.setProjectId(project.getProjectId());
-                    dto.setTitle(project.getTitle());
-                    dto.setDescription(project.getDescription());
-                    dto.setTotalAmountAsked(project.getTotalAmountAsked());
-                    dto.setAmountTillNow(project.getAmountTillNow());
-                    dto.setProfitable(project.isProfitable());
-                    dto.setCreatedOn(project.getCreatedOn());
+                    dto.convertProjectToDTO(project);
                     return dto;
                 }
         ).toList();
@@ -158,8 +148,8 @@ public class ProjectServiceImpl implements ProjectService {
                     : projectRepository.findByProjectStatus(status);
         } else {
             projectList = (status == null)
-                    ? projectRepository.findByCreatedById(userId)
-                    : projectRepository.findByCreatedByIdAndProjectStatus(userId, status);
+                    ? projectRepository.findProjectsByUserId(userId)
+                    : projectRepository.findProjectsByCreatedByIdAndProjectStatus(userId, status);
         }
 
         if (projectList.isEmpty()) {
