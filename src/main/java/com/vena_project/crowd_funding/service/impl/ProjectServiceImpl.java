@@ -148,8 +148,8 @@ public class ProjectServiceImpl implements ProjectService {
                     : projectRepository.findByProjectStatus(status);
         } else {
             projectList = (status == null)
-                    ? projectRepository.findByCreatedById(userId)
-                    : projectRepository.findByCreatedByIdAndProjectStatus(userId, status);
+                    ? projectRepository.findProjectsByUserId(userId)
+                    : projectRepository.findProjectsByCreatedByIdAndProjectStatus(userId, status);
         }
 
         if (projectList.isEmpty()) {
