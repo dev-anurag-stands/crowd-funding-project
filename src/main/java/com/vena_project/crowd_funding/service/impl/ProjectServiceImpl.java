@@ -63,6 +63,12 @@ public class ProjectServiceImpl implements ProjectService {
         return projectList.stream().map(project -> {
             ProjectDTO dto = new ProjectDTO();
             dto.convertProjectToDTO(project);
+            dto.setTitle(project.getTitle());
+            dto.setProjectId(project.getProjectId());
+            dto.setDescription(project.getDescription());
+            dto.setTotalAmountAsked(project.getTotalAmountAsked());
+            dto.setAmountTillNow(project.getAmountTillNow());
+            dto.setCreatedOn(project.getCreatedOn());
             return dto;
         }).collect(Collectors.toList());
     }

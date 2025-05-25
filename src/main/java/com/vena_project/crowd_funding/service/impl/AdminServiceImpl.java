@@ -46,6 +46,13 @@ public class AdminServiceImpl implements AdminService {
             throw new UserAlreadyAdminException("User with id " + userId + " is already an ADMIN.");
         }
 
+        if(!user.getContributions().isEmpty()){
+            throw new IllegalArgumentException("Contributor cannot be admin");
+        }
+        if(!user.getProjects().isEmpty()){
+            throw new IllegalArgumentException("Project created cannot be admin");
+        }
+
         user.setRole(UserRole.ADMIN);
         userService.saveUser(user);
         logger.info("User with id {} upgraded to ADMIN successfully", userId);
