@@ -12,6 +12,6 @@ public interface AdminService {
     String upgradeUserToAdmin(Long userId);
     List<UserResponseDTO> getUsersByRole(UserRole role);
     List<UserResponseDTO>getAllUsers();
-    Project updateProjectStatus(Long projectId, ProjectStatus status);
+    void updateProjectStatus(Long projectId, ProjectStatus status);
     List<ContributionResponseDTO> getAllContributions();
 }
