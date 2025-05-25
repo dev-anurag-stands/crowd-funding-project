@@ -9,7 +9,7 @@ import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import java.util.List;
 
 public interface ProjectService {
-    Project createProject(Long userId, ProjectRequestDTO project);
+    ProjectResponseDTO createProject(Long userId, ProjectRequestDTO project);
     List<ProjectResponseDTO> getProjects(Long userId, ProjectStatus status);
     ProjectResponseDTO getProjectById(Long id);
     List<ProjectDTO> getProjectsByProfitability(boolean profitability);

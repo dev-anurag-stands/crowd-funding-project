@@ -24,7 +24,7 @@ public class ProjectController {
     }
 
     @PostMapping("/create/{userId}")
-    public ResponseEntity<Project> createProject (@PathVariable Long userId, @Valid @RequestBody ProjectRequestDTO project){
+    public ResponseEntity<ProjectResponseDTO> createProject (@PathVariable Long userId, @Valid @RequestBody ProjectRequestDTO project){
         return new ResponseEntity<>(projectService.createProject(userId, project), HttpStatus.CREATED);
     }
 
