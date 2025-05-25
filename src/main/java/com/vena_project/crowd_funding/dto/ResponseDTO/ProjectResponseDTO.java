@@ -28,8 +28,6 @@ public class ProjectResponseDTO {
 
     private LocalDate createdOn;
 
-    private User createdBy;
-
     public void convertProjectToDTO(Project project) {
         this.projectId = project.getProjectId();
         this.title = project.getTitle();
@@ -39,6 +37,5 @@ public class ProjectResponseDTO {
         this.projectStatus = project.getProjectStatus();
         this.profitable = project.isProfitable();
         this.createdOn = project.getCreatedOn();
-        this.createdBy = project.getCreatedBy();
     }
 }
