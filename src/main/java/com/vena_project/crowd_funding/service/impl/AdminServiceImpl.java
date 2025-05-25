@@ -73,7 +73,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Project updateProjectStatus(Long projectId, ProjectStatus status) {
+    public void updateProjectStatus(Long projectId, ProjectStatus status) {
         logger.info("Updating project id {} status to {}", projectId, status);
 
         Project project = projectService.findProjectById(projectId);
@@ -95,7 +95,6 @@ public class AdminServiceImpl implements AdminService {
         Project savedProject = projectService.saveProject(project);
 
         logger.info("Project id {} status updated to {}", projectId, status);
-        return savedProject;
     }
 
     @Override
