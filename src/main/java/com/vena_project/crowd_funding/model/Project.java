@@ -18,7 +18,6 @@ public class Project {
 
     @ManyToOne
     @JoinColumn(name = "created_by_id", nullable = false)
-    @JsonIgnore
     private User createdBy;
 
     private String title;
@@ -37,6 +36,5 @@ public class Project {
     private LocalDate createdOn;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<Contribution> contributions;
 }
