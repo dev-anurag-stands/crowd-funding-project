@@ -12,7 +12,6 @@ import com.vena_project.crowd_funding.model.enums.UserRole;
 import com.vena_project.crowd_funding.repository.ProjectRepository;
 import com.vena_project.crowd_funding.service.ProjectService;
 import com.vena_project.crowd_funding.service.UserService;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
@@ -159,8 +158,8 @@ public class ProjectServiceImpl implements ProjectService {
                     : projectRepository.findByProjectStatus(status);
         } else {
             projectList = (status == null)
-                    ? projectRepository.findProjectsByUserId(userId)
-                    : projectRepository.findProjectsByCreatedByIdAndProjectStatus(userId, status);
+                    ? projectRepository.findByCreatedById(userId)
+                    : projectRepository.findByCreatedByIdAndProjectStatus(userId, status);
         }
 
         if (projectList.isEmpty()) {
