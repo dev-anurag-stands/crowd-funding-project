@@ -16,7 +16,7 @@ public interface UserService {
     boolean adminExists();
     void registerAdmin(User admin);
     UserResponseDTO getUserInfo(Long id);
-    User saveUser(User user);
+    void saveUser(User user);
     User getUserById(Long Id);
     List<UserResponseDTO> usersList();
 }
