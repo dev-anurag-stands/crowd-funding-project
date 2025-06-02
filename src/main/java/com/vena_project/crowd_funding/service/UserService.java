@@ -15,7 +15,7 @@ public interface UserService {
     UserResponseDTO updateUserInformation(Long id, UpdateUserInfoRequestDTO updatedUserInfo);
     boolean adminExists();
     void registerAdmin(User admin);
-    UserResponseDTO userInfo(Long id);
+    UserResponseDTO getUserInfo(Long id);
     User saveUser(User user);
     User getUserById(Long Id);
     List<UserResponseDTO> usersList();

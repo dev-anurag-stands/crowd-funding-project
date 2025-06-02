@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO userInfo(Long id) {
+    public UserResponseDTO getUserInfo(Long id) {
         User user = getUserById(id);
 
         if(user.getRole() == UserRole.ADMIN){
