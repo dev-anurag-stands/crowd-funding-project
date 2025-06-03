@@ -73,18 +73,6 @@ public class AdminServiceImpl implements AdminService {
         return users;
     }
 
-//    @Override
-//    public List<UserResponseDTO> getUsersByRole(Long requesterID,UserRole role) {
-//        logger.info("Fetching users with role '{}'", role);
-//
-//        List<UserResponseDTO> usersByRole = userService.usersList().stream()
-//                .filter(user -> user.getRole() == role)
-//                .collect(Collectors.toList());
-//
-//        logger.info("Found {} users with role '{}'", usersByRole.size(), role);
-//        return usersByRole;
-//    }
-
     @Override
     public List<UserResponseDTO> getUsersByRole(Long requesterId, UserRole role) {
         logger.info("User with id {} is requesting users with role '{}'", requesterId, role);
