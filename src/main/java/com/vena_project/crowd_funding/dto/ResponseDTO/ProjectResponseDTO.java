@@ -27,8 +27,7 @@ public class ProjectResponseDTO {
 
     private LocalDate createdOn;
 
-    private UserDTO createdBy;
-
+    private  String createdBy;
 
     public void convertProjectToDTO(Project project) {
         this.projectId = project.getProjectId();
@@ -39,11 +38,6 @@ public class ProjectResponseDTO {
         this.projectStatus = project.getProjectStatus();
         this.profitable = project.isProfitable();
         this.createdOn = project.getCreatedOn();
-
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(project.getCreatedBy().getId());
-        userDTO.setName(project.getCreatedBy().getName());
-
-        this.createdBy = userDTO;
+        this.createdBy=project.getCreatedBy().getName();
     }
 }
