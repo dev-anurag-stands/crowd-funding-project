@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface AdminService {
     String upgradeUserToAdmin(Long userId);
-    List<UserResponseDTO> getUsersByRole(UserRole role);
-    List<UserResponseDTO>getAllUsers();
+    List<UserResponseDTO> getUsersByRole(Long requesterId,UserRole role);
+    List<UserResponseDTO>getAllUsers(Long requesterId);
     void updateProjectStatus(Long projectId, ProjectStatus status);
-    List<ContributionResponseDTO> getAllContributions();
+    List<ContributionResponseDTO> getAllContributions(Long requesterId);
 }

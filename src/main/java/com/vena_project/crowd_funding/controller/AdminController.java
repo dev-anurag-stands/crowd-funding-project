@@ -20,12 +20,15 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @GetMapping("/users")
-    public ResponseEntity<List<UserResponseDTO>> getUsers(@RequestParam (required = false) UserRole role){
-        if(role==null ){
-            return new ResponseEntity<>(adminService.getAllUsers(), HttpStatus.OK);
+    @GetMapping("/users/{requesterId}")
+    public ResponseEntity<List<UserResponseDTO>> getUsers(
+            @PathVariable Long requesterId,
+            @RequestParam(required = false) UserRole role) {
+
+        if (role == null) {
+            return new ResponseEntity<>(adminService.getAllUsers(requesterId), HttpStatus.OK);
         }
-        return new ResponseEntity<>(adminService.getUsersByRole(role), HttpStatus.OK);
+        return new ResponseEntity<>(adminService.getUsersByRole(requesterId, role), HttpStatus.OK);
     }
 
     @PatchMapping("/upgrade/{userId}")
@@ -43,8 +46,8 @@ public class AdminController {
         return new ResponseEntity<>("Project with ID " + projectId + " has been " + status, HttpStatus.OK);
     }
 
-    @GetMapping("/contributions")
-    public ResponseEntity<List<ContributionResponseDTO>> getAllContributions() {
-        return new ResponseEntity<>(adminService.getAllContributions(), HttpStatus.OK);
+    @GetMapping("/contributions/{requesterId}")
+    public ResponseEntity<List<ContributionResponseDTO>> getAllContributions(@PathVariable Long requesterId) {
+        return new ResponseEntity<>(adminService.getAllContributions(requesterId), HttpStatus.OK);
     }
 }

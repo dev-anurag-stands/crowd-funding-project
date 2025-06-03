@@ -1,6 +1,5 @@
 package com.vena_project.crowd_funding.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vena_project.crowd_funding.dto.RequestDTO.UserRequestDTO;
 import com.vena_project.crowd_funding.model.enums.UserRole;
 import jakarta.persistence.*;
