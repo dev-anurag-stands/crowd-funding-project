@@ -1,7 +1,6 @@
 package com.vena_project.crowd_funding.dto.ResponseDTO;
 
 import com.vena_project.crowd_funding.model.Project;
-import com.vena_project.crowd_funding.model.User;
 import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -28,7 +27,7 @@ public class ProjectResponseDTO {
 
     private LocalDate createdOn;
 
-    private User createdBy;
+    private  String createdBy;
 
     public void convertProjectToDTO(Project project) {
         this.projectId = project.getProjectId();
@@ -39,6 +38,6 @@ public class ProjectResponseDTO {
         this.projectStatus = project.getProjectStatus();
         this.profitable = project.isProfitable();
         this.createdOn = project.getCreatedOn();
-        this.createdBy = project.getCreatedBy();
+        this.createdBy=project.getCreatedBy().getName();
     }
 }

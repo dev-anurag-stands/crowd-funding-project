@@ -138,7 +138,7 @@ public class ProjectServiceImpl implements ProjectService {
         ).toList();
     }
 
-    public List<ProjectResponseDTO> getProjects(Long userId, ProjectStatus status) {
+    public List<ProjectResponseDTO> getAllProjects(Long userId, ProjectStatus status) {
         User user = userService.getUserById(userId);
         List<Project> projectList;
 
@@ -148,8 +148,8 @@ public class ProjectServiceImpl implements ProjectService {
                     : projectRepository.findByProjectStatus(status);
         } else {
             projectList = (status == null)
-                    ? projectRepository.findProjectsByUserId(userId)
-                    : projectRepository.findProjectsByCreatedByIdAndProjectStatus(userId, status);
+                    ? projectRepository.findByCreatedById(userId)
+                    : projectRepository.findByCreatedByIdAndProjectStatus(userId, status);
         }
 
         if (projectList.isEmpty()) {

@@ -1,6 +1,5 @@
 package com.vena_project.crowd_funding.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vena_project.crowd_funding.dto.RequestDTO.UserRequestDTO;
 import com.vena_project.crowd_funding.model.enums.UserRole;
 import jakarta.persistence.*;
@@ -20,14 +19,13 @@ public class User {
 
     private String email;
 
-    @JsonIgnore
     private String password;
 
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.USER;
 
     @OneToMany(mappedBy = "createdBy")
-    @JsonIgnore
+
     private List<Project> projects = new ArrayList<>();
 
     @OneToMany(mappedBy = "contributor")

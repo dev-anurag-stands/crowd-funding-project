@@ -44,7 +44,6 @@ public class ContributionController {
         List<ContributionResponseDTO> responseList = contributionService.getContributionsOnUserProject(projectId, userId);
         return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
-
 }
 
 

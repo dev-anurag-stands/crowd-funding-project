@@ -3,7 +3,6 @@ package com.vena_project.crowd_funding.controller;
 import com.vena_project.crowd_funding.dto.RequestDTO.ProjectRequestDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.ProjectDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.ProjectResponseDTO;
-import com.vena_project.crowd_funding.model.Project;
 import com.vena_project.crowd_funding.model.enums.ProjectStatus;
 import com.vena_project.crowd_funding.service.ProjectService;
 import jakarta.validation.Valid;
@@ -29,10 +28,10 @@ public class ProjectController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ProjectResponseDTO>> getAllProjects(
+    public ResponseEntity<List<ProjectResponseDTO>> getUserProject(
             @PathVariable Long userId,
             @RequestParam(required = false) ProjectStatus status) {
-        return new ResponseEntity<>(projectService.getProjects(userId, status), HttpStatus.OK);
+        return new ResponseEntity<>(projectService.getAllProjects(userId, status), HttpStatus.OK);
     }
 
     @GetMapping("/approved")

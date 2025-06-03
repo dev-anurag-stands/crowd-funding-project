@@ -60,16 +60,28 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<UserResponseDTO> getAllUsers() {
-        logger.info("Fetching all users");
+    public List<UserResponseDTO> getAllUsers(Long requesterId) {
+        User requester = userService.getUserById(requesterId);
+        if (requester.getRole() != UserRole.ADMIN) {
+            logger.warn("User with id {} attempted to fetch all users without ADMIN rights", requesterId);
+            throw new IllegalArgumentException("Only admins can fetch all users.");
+        }
+
+        logger.info("Fetching all users by admin id {}", requesterId);
         List<UserResponseDTO> users = userService.usersList();
         logger.info("Total users fetched: {}", users.size());
         return users;
     }
 
     @Override
-    public List<UserResponseDTO> getUsersByRole(UserRole role) {
-        logger.info("Fetching users with role '{}'", role);
+    public List<UserResponseDTO> getUsersByRole(Long requesterId, UserRole role) {
+        logger.info("User with id {} is requesting users with role '{}'", requesterId, role);
+
+        User requester = userService.getUserById(requesterId);
+        if (requester.getRole() != UserRole.ADMIN) {
+            logger.warn("User with id {} is not authorized to fetch user list", requesterId);
+            throw new IllegalArgumentException("Only ADMIN users can access the user list.");
+        }
 
         List<UserResponseDTO> usersByRole = userService.usersList().stream()
                 .filter(user -> user.getRole() == role)
@@ -105,7 +117,14 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<ContributionResponseDTO> getAllContributions() {
+    public List<ContributionResponseDTO> getAllContributions(Long requesterId) {
+        logger.info("User with ID {} requested to fetch all contributions", requesterId);
+
+        User requester = userService.getUserById(requesterId);
+        if (requester.getRole() != UserRole.ADMIN) {
+            logger.warn("User with ID {} is not an ADMIN. Access denied.", requesterId);
+            throw new IllegalArgumentException("Only an ADMIN can view all contributions.");
+        }
 
         List<Contribution> contributions = contributionService.getAllContributions();
 
@@ -118,4 +137,5 @@ public class AdminServiceImpl implements AdminService {
             return dto;
         }).collect(Collectors.toList());
     }
+
 }
