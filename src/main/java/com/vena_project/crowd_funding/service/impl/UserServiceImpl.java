@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
             logger.info("name changed from : {} to {}", user.getName(), updatedUserInfo.getName());
             user.setName(updatedUserInfo.getName());
         }
-        userRepository.save(user);
+        saveUser(user);
         logger.info("User updated: {}, email: {}", updatedUserInfo.getName(), updatedUserInfo.getEmail());
 
         UserResponseDTO userResponseDTO = new UserResponseDTO();
