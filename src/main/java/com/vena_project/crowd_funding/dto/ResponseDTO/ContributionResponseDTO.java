@@ -15,9 +15,9 @@ public class ContributionResponseDTO {
     private Double amountGiven;
     private LocalDate contributionDate;
 
-    public void setFromContribution(Contribution contribution, User contributor, ProjectResponseDTO project) {
+    public void setFromContribution(Contribution contribution, String contributorName, ProjectResponseDTO project) {
         this.contributionId = contribution.getId();
-        this.contributorName = contributor.getName();
+        this.contributorName = contributorName;
         this.projectTitle = project.getTitle();
         this.projectDescription = project.getDescription();
         this.amountGiven = contribution.getAmountGiven();

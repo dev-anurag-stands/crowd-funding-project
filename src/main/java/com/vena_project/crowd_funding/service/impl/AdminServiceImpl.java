@@ -133,7 +133,7 @@ public class AdminServiceImpl implements AdminService {
             ProjectResponseDTO projectDTO = projectService.getProjectById(contribution.getProject().getProjectId());
 
             ContributionResponseDTO dto = new ContributionResponseDTO();
-            dto.setFromContribution(contribution, contributor, projectDTO);
+            dto.setFromContribution(contribution, contributor.getName(), projectDTO);
             return dto;
         }).collect(Collectors.toList());
     }

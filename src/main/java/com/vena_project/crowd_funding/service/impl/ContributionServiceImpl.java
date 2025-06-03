@@ -58,26 +58,26 @@ public class ContributionServiceImpl implements ContributionService {
             logger.warn("Contribution rejected - Project ID {} is not approved.", projectId);
             throw new IllegalArgumentException("User can only contribute to an approved project.");
         }
-        double newTotal = projectEntity.getAmountTillNow() + dto.getAmountGiven();
-        if (newTotal > projectEntity.getTotalAmountAsked()) {
-            logger.warn("Contribution rejected - Project ID {} has reached its funding goal.", projectId);
-            throw new IllegalArgumentException("Asked amount is already reached. Cannot accept more contributions.");
+        double contributionAmount = dto.getAmountGiven();
+        double remainingAmount = projectEntity.getTotalAmountAsked() - projectEntity.getAmountTillNow();
+        if (contributionAmount > remainingAmount) {
+            logger.warn("Contribution rejected - Project ID {} has only {} remaining, but {} was attempted.",
+                    projectId, remainingAmount, contributionAmount);
+            throw new IllegalArgumentException("Only " + remainingAmount + " can be contributed. Please reduce your contribution amount.");
         }
+        projectService.incrementAmountTillNow(projectId, dto.getAmountGiven());
 
         Contribution contribution = new Contribution();
         contribution.setContributor(contributor);
         contribution.setProject(projectEntity);
         contribution.setAmountGiven(dto.getAmountGiven());
         contribution.setDate(LocalDate.now());
-
-        projectService.incrementAmountTillNow(projectId, dto.getAmountGiven());
-        Contribution saved = contributionRepository.save(contribution);
-
+        Contribution saved = saveContribution(contribution);
         logger.info("Contribution of amount {} by user ID {} saved successfully for project ID {}",
                 dto.getAmountGiven(), dto.getUserId(), projectId);
 
         ContributionResponseDTO responseDTO = new ContributionResponseDTO();
-        responseDTO.setFromContribution(saved, contributor, projectService.getProjectById(projectId));
+        responseDTO.setFromContribution(saved, contributor.getName(), projectService.getProjectById(projectId));
         return responseDTO;
     }
 
@@ -97,13 +97,13 @@ public class ContributionServiceImpl implements ContributionService {
         return contributions.stream().map(c -> {
             ProjectResponseDTO project = projectService.getProjectById(c.getProject().getProjectId());
             ContributionResponseDTO dto = new ContributionResponseDTO();
-            dto.setFromContribution(c, user, project);
+            dto.setFromContribution(c, user.getName(), project);
             return dto;
         }).collect(Collectors.toList());
     }
 
     @Override
-    public List<ContributionResponseDTO> getContributionsOnUserProject(Long projectId, Long requesterId) {
+    public List<ContributionResponseDTO> getContributionsOnUserProject(Long requesterId, Long projectId) {
         logger.info("Requester ID {} requesting contributions on Project ID {}", requesterId, projectId);
 
         User requester = userService.getUserById(requesterId);
@@ -114,7 +114,7 @@ public class ContributionServiceImpl implements ContributionService {
             logger.warn("Unauthorized access by User ID {} for Project ID {}", requesterId, projectId);
             throw new IllegalArgumentException("User not authorized to view contributions on this project.");
         }
-        List<Contribution> contributions = contributionRepository.findByProjectId(projectId);
+        List<Contribution> contributions = contributionRepository.findByProjectProjectId(projectId);
         ProjectResponseDTO projectResponseDTO = projectService.getProjectById(projectId);
 
         logger.info("Returning {} contributions on project ID {}", contributions.size(), projectId);
@@ -122,7 +122,7 @@ public class ContributionServiceImpl implements ContributionService {
         return contributions.stream().map(c -> {
             User contributor = userService.getUserById(c.getContributor().getId());
             ContributionResponseDTO dto = new ContributionResponseDTO();
-            dto.setFromContribution(c, contributor, projectResponseDTO);
+            dto.setFromContribution(c, contributor.getName(), projectResponseDTO);
             return dto;
         }).collect(Collectors.toList());
     }
@@ -130,4 +130,9 @@ public class ContributionServiceImpl implements ContributionService {
     public List<Contribution> getAllContributions() {
         return contributionRepository.findAll();
     }
+    @Override
+    public Contribution saveContribution(Contribution contribution) {
+        return contributionRepository.save(contribution);
+    }
+
 }
