@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
             logger.info("name changed from : {} to {}", user.getName(), updatedUserInfo.getName());
             user.setName(updatedUserInfo.getName());
         }
-        userRepository.save(user);
+        saveUser(user);
         logger.info("User updated: {}, email: {}", updatedUserInfo.getName(), updatedUserInfo.getEmail());
 
         UserResponseDTO userResponseDTO = new UserResponseDTO();
@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO userInfo(Long id) {
+    public UserResponseDTO getUserInfo(Long id) {
         User user = getUserById(id);
 
         if(user.getRole() == UserRole.ADMIN){
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User saveUser(User user){
-        return userRepository.save(user);
+    public void saveUser(User user){
+        userRepository.save(user);
     }
 }
