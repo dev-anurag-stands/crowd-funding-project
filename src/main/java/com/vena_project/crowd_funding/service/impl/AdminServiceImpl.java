@@ -3,6 +3,7 @@ package com.vena_project.crowd_funding.service.impl;
 import com.vena_project.crowd_funding.dto.ResponseDTO.ContributionResponseDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.ProjectResponseDTO;
 import com.vena_project.crowd_funding.dto.ResponseDTO.UserResponseDTO;
+import com.vena_project.crowd_funding.exception.AccessDeniedForAdminException;
 import com.vena_project.crowd_funding.exception.UserAlreadyAdminException;
 import com.vena_project.crowd_funding.model.Contribution;
 import com.vena_project.crowd_funding.model.Project;
@@ -80,7 +81,7 @@ public class AdminServiceImpl implements AdminService {
         User requester = userService.getUserById(requesterId);
         if (requester.getRole() != UserRole.ADMIN) {
             logger.warn("User with id {} is not authorized to fetch user list", requesterId);
-            throw new IllegalArgumentException("Only ADMIN users can access the user list.");
+            throw new AccessDeniedForAdminException("Only ADMIN users can access the user list.");
         }
 
         List<UserResponseDTO> usersByRole = userService.usersList().stream()
@@ -111,7 +112,7 @@ public class AdminServiceImpl implements AdminService {
         }
 
         project.setProjectStatus(status);
-        Project savedProject = projectService.saveProject(project);
+        projectService.saveProject(project);
 
         logger.info("Project id {} status updated to {}", projectId, status);
     }
@@ -123,7 +124,7 @@ public class AdminServiceImpl implements AdminService {
         User requester = userService.getUserById(requesterId);
         if (requester.getRole() != UserRole.ADMIN) {
             logger.warn("User with ID {} is not an ADMIN. Access denied.", requesterId);
-            throw new IllegalArgumentException("Only an ADMIN can view all contributions.");
+            throw new AccessDeniedForAdminException("Only an ADMIN can view all contributions.");
         }
 
         List<Contribution> contributions = contributionService.getAllContributions();
@@ -137,5 +138,4 @@ public class AdminServiceImpl implements AdminService {
             return dto;
         }).collect(Collectors.toList());
     }
-
 }
