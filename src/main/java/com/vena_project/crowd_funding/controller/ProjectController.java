@@ -31,7 +31,7 @@ public class ProjectController {
     public ResponseEntity<List<ProjectResponseDTO>> getUserProject(
             @PathVariable Long userId,
             @RequestParam(required = false) ProjectStatus status) {
-        return new ResponseEntity<>(projectService.getAllProjects(userId, status), HttpStatus.OK);
+        return new ResponseEntity<>(projectService.getProjectsByUserAndStatus(userId, status), HttpStatus.OK);
     }
 
     @GetMapping("/approved")

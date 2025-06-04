@@ -138,7 +138,7 @@ public class ProjectServiceImpl implements ProjectService {
         ).toList();
     }
 
-    public List<ProjectResponseDTO> getAllProjects(Long userId, ProjectStatus status) {
+    public List<ProjectResponseDTO> getProjectsByUserAndStatus(Long userId, ProjectStatus status) {
         User user = userService.getUserById(userId);
         List<Project> projectList;
 
