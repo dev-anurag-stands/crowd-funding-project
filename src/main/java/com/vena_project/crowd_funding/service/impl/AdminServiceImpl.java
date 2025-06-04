@@ -112,7 +112,7 @@ public class AdminServiceImpl implements AdminService {
         }
 
         project.setProjectStatus(status);
-        Project savedProject = projectService.saveProject(project);
+        projectService.saveProject(project);
 
         logger.info("Project id {} status updated to {}", projectId, status);
     }
@@ -138,5 +138,4 @@ public class AdminServiceImpl implements AdminService {
             return dto;
         }).collect(Collectors.toList());
     }
-
 }
