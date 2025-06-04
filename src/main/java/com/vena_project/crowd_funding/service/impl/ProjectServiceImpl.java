@@ -138,6 +138,7 @@ public class ProjectServiceImpl implements ProjectService {
         ).toList();
     }
 
+    @Override
     public List<ProjectResponseDTO> getProjectsByUserAndStatus(Long userId, ProjectStatus status) {
         User user = userService.getUserById(userId);
         List<Project> projectList;
