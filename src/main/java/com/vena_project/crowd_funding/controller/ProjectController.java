@@ -49,7 +49,7 @@ public class ProjectController {
         return new ResponseEntity<>(projectService.getProjectsByProfitability(isProfitable), HttpStatus.OK);
     }
 
-    @PostMapping("/update/{projectId}")
+    @PatchMapping("/update/{projectId}")
     public ResponseEntity<ProjectResponseDTO> updateProject(@PathVariable Long projectId, @Valid @RequestBody ProjectRequestDTO updatedProject) {
         return ResponseEntity.ok(projectService.updateProject(projectId, updatedProject));
     }
