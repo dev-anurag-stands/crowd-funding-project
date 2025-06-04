@@ -15,6 +15,9 @@ public interface ContributionService {
     List<ContributionResponseDTO> getContributionsOnUserProject(Long projectId, Long requesterId);
 
     List<Contribution> getAllContributions();
+
+    Contribution saveContribution(Contribution contribution);
+
 }
 
 
