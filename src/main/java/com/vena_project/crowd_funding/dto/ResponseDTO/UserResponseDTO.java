@@ -9,16 +9,12 @@ import lombok.Data;
 
 @Data
 public class UserResponseDTO {
-    @NotNull(message = "id cannot be null")
     private Long id;
 
-    @Email(message = "provide a valid email address")
     private String email;
 
-    @NotBlank
     private String name;
 
-    @NotNull(message = "role cannot be null")
     private UserRole role;
 
     public void convertToDTO(User user){
